@@ -5,4 +5,8 @@
     <RootNamespace>prn_job_manager</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Image\" />
+  </ItemGroup>
+
 </Project>
