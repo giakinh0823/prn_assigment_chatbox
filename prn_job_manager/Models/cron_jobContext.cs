@@ -5,29 +5,29 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace prn_job_manager.Models
 {
-    public partial class CronJobContext : DbContext
+    public partial class cron_jobContext : DbContext
     {
-        public CronJobContext()
+        public cron_jobContext()
         {
         }
 
-        public CronJobContext(DbContextOptions<CronJobContext> options)
+        public cron_jobContext(DbContextOptions<cron_jobContext> options)
             : base(options)
         {
         }
 
-        public virtual DbSet<Job> Jobs { get; set; } = null!;
-        public virtual DbSet<JobSchedule> JobSchedules { get; set; } = null!;
-        public virtual DbSet<Log> Logs { get; set; } = null!;
-        public virtual DbSet<User> Users { get; set; } = null!;
-        public virtual DbSet<UserJob> UserJobs { get; set; } = null!;
+        public virtual DbSet<Job> Jobs { get; set; }
+        public virtual DbSet<JobSchedule> JobSchedules { get; set; }
+        public virtual DbSet<Log> Logs { get; set; }
+        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<UserJob> UserJobs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=HAGIAKINH;database=cron_job;Integrated security=true;TrustServerCertificate=true");
+                optionsBuilder.UseSqlServer("server =DESKTOP-0R3CGNP\\HIEUTRAN; database = cron_job; uid=sa;pwd=tranminhhieuabc01;");
             }
         }
 
@@ -112,7 +112,7 @@ namespace prn_job_manager.Models
                 entity.HasOne(d => d.Job)
                     .WithMany()
                     .HasForeignKey(d => d.JobId)
-                    .HasConstraintName("FK__Job_Sched__job_i__25869641");
+                    .HasConstraintName("FK__Job_Sched__job_i__4AB81AF0");
             });
 
             modelBuilder.Entity<Log>(entity =>
@@ -145,21 +145,19 @@ namespace prn_job_manager.Models
                 entity.HasOne(d => d.Job)
                     .WithMany(p => p.Logs)
                     .HasForeignKey(d => d.JobId)
-                    .HasConstraintName("FK__Log__job_id__2D27B809");
+                    .HasConstraintName("FK__Log__job_id__52593CB8");
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Logs)
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__Log__user_id__2E1BDC42");
+                    .HasConstraintName("FK__Log__user_id__534D60F1");
             });
 
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("User");
 
-                entity.Property(e => e.UserId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("user_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
 
                 entity.Property(e => e.CreatedAt)
                     .HasColumnType("datetime")
@@ -198,12 +196,12 @@ namespace prn_job_manager.Models
                 entity.HasOne(d => d.Job)
                     .WithMany()
                     .HasForeignKey(d => d.JobId)
-                    .HasConstraintName("FK__User_Job__job_id__2A4B4B5E");
+                    .HasConstraintName("FK__User_Job__job_id__4F7CD00D");
 
                 entity.HasOne(d => d.User)
                     .WithMany()
                     .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__User_Job__user_i__29572725");
+                    .HasConstraintName("FK__User_Job__user_i__4E88ABD4");
             });
 
             OnModelCreatingPartial(modelBuilder);
