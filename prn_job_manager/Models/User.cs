@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace prn_job_manager.Models
 {
@@ -11,9 +12,11 @@ namespace prn_job_manager.Models
         }
 
         public int UserId { get; set; }
-        public string? Name { get; set; }
-        public string? Email { get; set; }
-        public string? Password { get; set; }
+        public string Name { get; set; }
+        [Required(ErrorMessage = "Email không để trống")]
+        public string Email { get; set; }
+        [Required(ErrorMessage = "Mật khẩu không để trống")]
+        public string Password { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
 

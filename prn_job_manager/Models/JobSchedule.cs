@@ -12,6 +12,6 @@ namespace prn_job_manager.Models
         public DateTime? LastRun { get; set; }
         public DateTime? NextRun { get; set; }
 
-        public virtual Job? Job { get; set; }
+        public virtual Job Job { get; set; }
     }
 }
