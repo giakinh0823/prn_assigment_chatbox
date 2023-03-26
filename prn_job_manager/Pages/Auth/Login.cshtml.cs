@@ -49,7 +49,6 @@ namespace prn_job_manager.Pages.Auth
                             AllowRefresh = true
                         });
                     }
-                    HttpContext.Session.SetString("name", p.Name!);
                     HttpContext.Session.SetString("email", p.Email!);
                     return RedirectToPage("/Job/List");
 
@@ -71,7 +70,7 @@ namespace prn_job_manager.Pages.Auth
             var scheme = CookieAuthenticationDefaults.AuthenticationScheme;
             HttpContext.Session.Remove("email");
             await HttpContext.SignOutAsync(scheme);
-            return RedirectToPage("../Index");
+            return RedirectToPage("/auth/login");
         }
     }
 }
