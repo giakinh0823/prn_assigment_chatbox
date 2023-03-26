@@ -33,6 +33,14 @@ namespace prn_job_manager.Pages.Job
                 ViewData["Error"] = "Cron Expression must not be empty";
                 return Page();
             }
+            
+            // validate regex cron expression
+            if (!CronExpression.IsValidExpression(Job.Expression))
+            {
+                ViewData["Error"] = "Cron Expression is invalid";
+                return Page();
+            }
+            
             if(Job.Method == null || Job.Method.Trim().Length == 0 
                                   || (!JobConstant.Method.GET.Equals(Job.Method.ToUpper())
                                       && !JobConstant.Method.POST.Equals(Job.Method.ToUpper())
