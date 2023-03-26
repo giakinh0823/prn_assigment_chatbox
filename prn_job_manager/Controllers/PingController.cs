@@ -13,4 +13,17 @@ public class PingController : Controller
     {
         return Ok("pong");
     }
+    
+    // post
+    [HttpPost]
+    public IActionResult Post()
+    {
+        return Ok("pong");
+    }
+    
+    [HttpPost("payload")]
+    public IActionResult Payload([FromBody] string payload)
+    {
+        return Ok(payload);
+    }
 }
