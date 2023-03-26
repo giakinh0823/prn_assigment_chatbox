@@ -1,16 +1,18 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using prn_job_manager.Models;
 
 namespace prn_job_manager.Pages.Job
 {
+    [Authorize]
     public class CreateModel : PageModel
     {
-        private readonly cron_jobContext context;
+        private readonly cron_jobContext _context;
 
-        public CreateModel(cron_jobContext _context)
+        public CreateModel(cron_jobContext context)
         {
-            context = _context;
+            _context = context;
         }
         [BindProperty]
         public Models.Job Job { get; set; } = default!;
@@ -18,8 +20,8 @@ namespace prn_job_manager.Pages.Job
         {
             Job.CreatedAt = DateTime.Now;
             Job.UpdatedAt = null;
-            context.Jobs.Add(Job);
-            context.SaveChanges();
+            _context.Jobs.Add(Job);
+            _context.SaveChanges();
             return RedirectToPage("./List");
         }
     }
