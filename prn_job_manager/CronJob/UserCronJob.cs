@@ -1,8 +1,10 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using prn_job_manager.Constant;
+using prn_job_manager.Hubs;
 using prn_job_manager.Models;
 using Quartz;
 
@@ -12,11 +14,13 @@ public class UserCronJob : IJob
 {
     private readonly cron_jobContext _context;
     private readonly ILogger<UserCronJob> _logger;
+    private readonly IHubContext<NotifyHub> _notifyHub;
 
-    public UserCronJob(cron_jobContext context, ILogger<UserCronJob> logger)
+    public UserCronJob(cron_jobContext context, ILogger<UserCronJob> logger,  IHubContext<NotifyHub> notifyHub)
     {
         _context = context;
         _logger = logger;
+        _notifyHub = notifyHub;
     }
 
     [Obsolete("Obsolete")]
@@ -56,12 +60,20 @@ public class UserCronJob : IJob
                 log.Status = LogConstant.SUCESSS;
                 log.Output = response;
                 _logger.LogInformation($"Success call job {job.Name}");
+                if (user?.Email != null)
+                {
+                    await _notifyHub.Clients.Group(user.Email).SendAsync("Notify",$"Success call job {job.Name}");
+                }
             }
             catch (Exception e)
             {
                 _logger.LogError($"Error call job {job.Name}: {e}");
                 log.Status = LogConstant.SUCESSS;
                 log.Output = e.Message;
+                if (user?.Email != null)
+                {
+                    await _notifyHub.Clients.Group(user.Email).SendAsync("Notify",$"Error call job {job.Name}");
+                }
             }
             log.EndTime = DateTime.Now;
             _context.Logs.Add(log);

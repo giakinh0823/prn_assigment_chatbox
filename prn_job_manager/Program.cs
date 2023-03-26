@@ -18,6 +18,7 @@ builder.Services.AddDbContext<cron_jobContext>(options => options.UseSqlServer
     (builder.Configuration.GetConnectionString("SqlConnection") 
      ?? throw new InvalidOperationException("Connection string 'SqlConnection' not found.")));
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {
