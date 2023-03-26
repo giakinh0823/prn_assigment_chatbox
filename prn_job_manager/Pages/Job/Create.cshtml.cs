@@ -31,10 +31,10 @@ namespace prn_job_manager.Pages.Job
                 return Page();
             }
             if(Job.Method == null || Job.Method.Trim().Length == 0 
-                                  || JobConstant.Method.GET.Equals(Job.Method.ToUpper())
-                                    || JobConstant.Method.POST.Equals(Job.Method.ToUpper())
-                                  || JobConstant.Method.PUT.Equals(Job.Method.ToUpper())
-                                  || JobConstant.Method.DELETE.Equals(Job.Method.ToUpper()))
+                                  || (!JobConstant.Method.GET.Equals(Job.Method.ToUpper())
+                                      && !JobConstant.Method.POST.Equals(Job.Method.ToUpper())
+                                      && !JobConstant.Method.PUT.Equals(Job.Method.ToUpper())
+                                      && !JobConstant.Method.DELETE.Equals(Job.Method.ToUpper())))
             {
                 ViewData["Error"] = "Method must not be empty or 'GET', 'POST', 'PUT', 'DELETE'";
                 return Page();
