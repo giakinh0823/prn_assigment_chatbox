@@ -23,7 +23,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-gray-50 overflow-hidden sm:rounded-md bg-gray-50 border-solid border-gray-100 border-2">
+                        <div class="bg-gray-50 sm:rounded-md bg-gray-50 border-solid border-gray-100 border-2 overflow-auto">
                             <ul>
                                 <div class="mt-4 flex-shrink-0 flex">
                                     <span class="inline-flex rounded-md shadow-sm">
@@ -52,13 +52,14 @@
                                             <th scope="col">Status</th>
                                             <th scope="col">CreatedAt</th>
                                             <th scope="col">UpdatedAt</th>
+                                            <th scope="col">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach (var item in Model.List)
                                         {
                                             <tr scope="row">
-
+                                                <td>@item.JobId</td>
                                                 <td>@item.Name</td>
                                                 <td>@item.Description</td>
                                                 <td>@item.Webhook</td>
@@ -67,7 +68,14 @@
                                                 <td>@item.Method</td>
                                                 <td>@item.Expression</td>
                                                 <td>@item.Status</td>
-                                                <td>@Convert.ToDateTime(@item.CreatedAt).ToString("dd/MM/yyyy")</td>
+                                                @if (item.CreatedAt != null)
+                                                {
+                                                    <td>@Convert.ToDateTime(@item.CreatedAt).ToString("dd/MM/yyyy")</td>   
+                                                }
+                                                else
+                                                {
+                                                    <td></td>
+                                                }
                                                 @if (item.UpdatedAt != null)
                                                 {
                                                     <td>@Convert.ToDateTime(@item.UpdatedAt).ToString("dd/MM/yyyy")</td>
@@ -76,7 +84,8 @@
                                                 {
                                                     <td></td>
                                                 }
-                                                <td><a asp-page="/EditPage" asp-route-id="@item.JobId" class="btn btn-success">Edit</a> </td>
+                                                <td><a asp-page="Edit" asp-route-id="@item.JobId" class="btn btn-success">Edit</a> </td>
+                                                <td><a asp-page-handler="delete" asp-route-id="@item.JobId" class="btn btn-danger">Delete</a> </td>
                                             </tr>
                                         }
                                     </tbody>

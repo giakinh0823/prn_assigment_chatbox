@@ -45,9 +45,7 @@
 
     }
 </style>
-
-<section class="bg-info-light position-relative overflow-hidden">
-
+<section class="bg-info-light position-relative">
     <div class="container position-relative">
         <div class="mw-6xl mx-auto">
             <div class="row align-items-center">
@@ -61,35 +59,40 @@
                                 If you don't have an account then <a href="register" onclick="window.location.href='/auth/register'">sign up</a>.
                             </p>
                         </div>
-                        <div class="mw-md py-5 mx-auto background_login">
+                        <div class="bg-white p-5 shadow sm:rounded-lg sm:px-10">
+                            <p class="text-danger">@ViewData["Error"]</p>
                             <form asp-page="/Login" method="post">
-                                <div class="mb-4">
+                                <div class="mb-2">
                                     <label class="form-label fw-bold">Email Address *</label>
                                     <input class="form-control"
                                            type="email"
                                            placeholder="Enter email address"
-                                           asp-for="@Model.User!.Email" />
-                                    <span class="text-danger" asp-validation-for="@Model.User!.Email"></span><br />
+                                           asp-for="@Model.User!.Email"/>
+                                    <span class="text-danger" asp-validation-for="@Model.User!.Email"></span><br/>
                                 </div>
-                                <div class="mb-4">
+                                <div class="mb-2">
                                     <label class="form-label fw-bold">Password *</label>
                                     <input class="form-control"
                                            type="password"
                                            placeholder="*******"
-                                           asp-for="@Model.User!.Password" />
-                                    <span class="text-danger" asp-validation-for="@Model.User!.Password"></span><br />
+                                           asp-for="@Model.User!.Password"/>
+                                    <span class="text-danger" asp-validation-for="@Model.User!.Password"></span><br/>
                                 </div>
-                                <div class="d-flex mb-5 flex-wrap align-items-center justify-content-between">
+                                <div class="d-flex mb-4 flex-wrap align-items-center justify-content-between">
                                     <div>
                                         <a class="btn p-0 btn-link fs-9" asp-page="ForgotPassword">Forgot Password?</a>
                                     </div>
                                 </div>
-                                <input class="btn w-100 btn-primary shadow" type="submit" value="Sign In" />
+                                <div>
+                                    <span class="block w-full rounded-md shadow-sm">
+                                        <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-bold rounded-md text-white bg-purple-900 hover:bg-purple-600 focus:outline-none focus:border-purple-700 focus:shadow-outline-purple active:bg-purple-700 transition duration-150 ease-in-out button-login">
+                                            Login
+                                        </button>
+                                    </span>
+                                </div>
                             </form>
-                            <p class="text-danger">@ViewData["Error"]</p>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
