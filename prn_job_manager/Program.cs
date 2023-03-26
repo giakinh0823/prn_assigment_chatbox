@@ -63,10 +63,15 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
-app.UseAuthorization();
 app.UseAuthentication();
 app.UseSession();
 app.MapRazorPages();
 app.MapControllers();
+
+app.UseRouting();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
 
 app.Run();
