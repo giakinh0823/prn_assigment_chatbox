@@ -17,8 +17,9 @@ namespace prn_job_manager.Models
         public long? LongProp2 { get; set; }
         public decimal? DecProp1 { get; set; }
         public decimal? DecProp2 { get; set; }
-        public string? BoolProp1 { get; set; }
-        public string? BoolProp2 { get; set; }
+        public bool? BoolProp1 { get; set; }
+        public bool? BoolProp2 { get; set; }
+        public string? TimeZoneId { get; set; }
 
         public virtual QrtzTrigger QrtzTrigger { get; set; } = null!;
     }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using prn_job_manager.Models;
 
@@ -11,9 +12,10 @@ using prn_job_manager.Models;
 namespace prn_job_manager.Migrations
 {
     [DbContext(typeof(cron_jobContext))]
-    partial class cron_jobContextModelSnapshot : ModelSnapshot
+    [Migration("20230326163951_UpdateDatabase-fix-job")]
+    partial class UpdateDatabasefixjob
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

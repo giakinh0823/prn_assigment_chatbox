@@ -1,5 +1,5 @@
 ﻿@page
-@model prn_job_manager.Pages.Job.CreateModel
+@model prn_job_manager.Pages.Scheduler.CreateModel
 
 @{
     ViewData["Title"] = "Create";
@@ -97,7 +97,7 @@
                                                                class="text-sm font-medium leading-5 text-gray-700">
                                                             Payload
                                                         </label>
-                                                        <input id="Payload" asp-for="Job.Webhook"
+                                                        <input id="Payload" asp-for="Job.Payload"
                                                                class="mt-1 form-input w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                                         <!---->
                                                     </div>
@@ -117,10 +117,10 @@
                                                                class="text-sm font-medium leading-5 text-gray-700">Method</label>
                                                         <select id="http_method" asp-for="Job.Method"
                                                                 class="mt-1 block form-select w-full py-2 px-3 py-0 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
-                                                            <option value="Get">GET</option>
-                                                            <option value="Post">POST</option>
-                                                            <option value="Put">PUT</option>
-                                                            <option value="Delete">DELETE</option>
+                                                            <option value="GET">GET</option>
+                                                            <option value="POST">POST</option>
+                                                            <option value="PUT">PUT</option>
+                                                            <option value="DELETE">DELETE</option>
 
                                                         </select>
                                                     </div>
@@ -132,48 +132,41 @@
                                                         </label>
                                                         <select id="type" asp-for="Job.Status"
                                                                 class="mt-1 block form-select w-full py-2 px-3 py-0 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5">
-                                                            <option value="active">Active</option>
-                                                            <option value="inactive">Inactive</option>
+                                                            <option value="ACTIVE">Active</option>
+                                                            <option value="INACTIVE">Inactive</option>
                                                         </select>
                                                     </div>
-                                                    <div class="col-span-6 sm:col-span-6">
-                                                        <label for="Expression"
-                                                               class="text-sm font-medium leading-5 text-gray-700">
-                                                            Expression
-                                                        </label>
-                                                        <input id="Expression" asp-for="Job.Expression"
-                                                               class="mt-1 form-input w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
-                                                        <!---->
-                                                    </div>
-
+                                            <div class="col-span-6 sm:col-span-6">
+                                                <label for="Expression"
+                                                       class="text-sm font-medium leading-5 text-gray-700">
+                                                    Expression
+                                                </label>
+                                                <input id="Expression" asp-for="Job.Expression"
+                                                       class="mt-1 form-input w-full py-2 px-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-300 transition duration-150 ease-in-out sm:text-sm sm:leading-5" />
                                                 <!---->
-                                                <div class="sm:col-span-6">
+                                            </div>
+                                            </div>
                                             </form>
 
                                                     <div class="relative flex items-start">
                                                         <div class="absolute flex items-center h-5"></div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
-                                            <div class="flex justify-end">
-                                                <span class="inline-flex rounded-md shadow-sm">
-                                                    <button class="py-2 px-4 border border-gray-300 rounded-md text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out router-link-active"
-                                                            type="button">
-                                                        Cancel
-                                                    </button>
-                                                </span>
-                                        <span class="ml-3 inline-flex rounded-md shadow-sm" >
-                                            <button onclick="$('#create').submit()" class="inline-flex justify-center py-2 px-4 border border-transparent text-sm leading-5 font-medium rounded-md text-white bg-indigo-900 hover:bg-indigo-700 focus:outline-none focus:border-indigo-700 focus:shadow-outline-indigo active:bg-indigo-900 transition duration-150 ease-in-out">
-                                                <svg fill="currentColor" viewBox="0 0 20 20" 
-                                                             class="-ml-1 mr-3 h-5 w-5">
-                                                            <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                                                  clip-rule="evenodd" fill-rule="evenodd">
-                                                            </path>
-                                                        </svg>Save
-                                                    </button>
-                                                </span>
+                                                <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
+                                                                                            <div class="flex justify-end">
+                                                                                                <span class="inline-flex rounded-md shadow-sm">
+                                                                                                    <button onclick="$('#create').reset()" class="py-2 px-4 border border-gray-300 rounded-md text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out router-link-active"
+                                                                                                            type="button">
+                                                                                                        Cancel
+                                                                                                    </button>
+                                                                                                </span>
+                                                                                            <span class="ml-3 inline-flex rounded-md shadow-sm" >
+                                                                                                <button onclick="$('#create').submit()" class="py-2 px-4 border border-gray-300 rounded-md text-sm leading-5 font-medium text-gray-700 hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue active:bg-gray-50 active:text-gray-800 transition duration-150 ease-in-out router-link-active">
+                                                                                                        Save
+                                                                                                    </button>
+                                                                                                </span>
+                                                                                            </div>
+                                                                                        </div>
                                             </div>
                                         </div>
                                     </div>
@@ -183,8 +176,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 </main>
 
 

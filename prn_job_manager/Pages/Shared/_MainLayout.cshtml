@@ -3,12 +3,10 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - prn_job_manager</title>
-    <link href="~/css/Home.css" rel="stylesheet" />
-    <link href="~/Image" rel="stylesheet" />
+    <title>@ViewData["Title"] CronHub</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/Home.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Image" rel="stylesheet" />
     <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
@@ -26,7 +24,7 @@
                                 <img data-v-9589e138="" src="~/image/zyro-image.png" alt="Cronhub logo"
                                      class="hidden lg:block h-4 w-auto" />
                             </a>
-                            <a data-v-9589e138="" href="/job/list"
+                            <a data-v-9589e138="" href="/Scheduler"
                                class="mt-1 group flex items-center px-2 py-2 hover:bg-gray-700 text-md leading-5 font-medium hover:text-gray-100 text-gray-100 rounded-md focus:outline-none transition ease-in-out duration-150 router-link-exact-active router-link-active"
                                aria-current="page">
                                 <svg data-v-9589e138="" fill="none" stroke-linecap="round"
@@ -39,7 +37,7 @@
                         </nav>
                     </div>
                     <nav data-v-9589e138="" class="flex-initial px-2 py-8 border-gray-200 border-r border-gray-300">
-                        <a data-v-9589e138="" href="Profile"
+                        <a data-v-9589e138="" href="/settings"
                            class="text-gray-400 hover:bg-gray-700 hover:text-gray-300 ml-2 mt-1 group flex items-center px-2 py-2 text-md leading-5 font-medium rounded-md focus:outline-none transition ease-in-out duration-150">
                             <svg data-v-9589e138="" fill="currentColor" viewBox="0 0 20 20"
                                  class="mr-3 h-5 w-5 text-gray-400 hover:text-gray-300 transition ease-in-out duration-150">
@@ -87,6 +85,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/signalr/dist/browser/signalr.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

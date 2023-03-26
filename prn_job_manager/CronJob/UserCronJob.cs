@@ -11,36 +11,61 @@ namespace prn_job_manager.CronJob;
 public class UserCronJob : IJob
 {
     private readonly cron_jobContext _context;
+    private readonly ILogger<UserCronJob> _logger;
 
-    public UserCronJob(cron_jobContext context)
+    public UserCronJob(cron_jobContext context, ILogger<UserCronJob> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [Obsolete("Obsolete")]
     public async Task Execute(IJobExecutionContext context)
     {
         int jobId = int.Parse(context.JobDetail.Key.Name);
+        int userId = int.Parse(context.JobDetail.Key.Group);
+        
         var job = await _context.Jobs.FirstOrDefaultAsync(x => x.JobId == jobId);
         if (job is { Webhook: { }, Method: { } })
         {
-            string? response = null;
-            switch (job.Method.ToUpper())
+            User? user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            Log log = new Log()
             {
-                case "GET":
-                    response = await GetApi(job.Webhook);
-                    break; 
-                case "POST":
-                    response = await PostApi(job.Webhook);
-                    break;
-                case "PUT":
-                    response = await PutApi(job.Webhook);
-                    break;
-                case "DELETE":
-                    response = await DeleteApi(job.Webhook);
-                    break;
+                JobId = job.JobId,
+                UserId = user?.UserId ?? null,
+                StartTime = DateTime.Now,
+            };
+            try
+            {
+                string? response = null;
+                switch (job.Method.ToUpper())
+                {
+                    case "GET":
+                        response = await GetApi(job.Webhook, job.Header);
+                        break; 
+                    case "POST":
+                        response = await PostApi(job.Webhook, job.Header, job.Payload);
+                        break;
+                    case "PUT":
+                        response = await PutApi(job.Webhook, job.Header, job.Header);
+                        break;
+                    case "DELETE":
+                        response = await DeleteApi(job.Webhook, job.Header);
+                        break;
+                }
+                log.Status = LogConstant.SUCESSS;
+                log.Output = response;
+                _logger.LogInformation($"Success call job {job.Name}");
             }
-            Console.WriteLine(response);
+            catch (Exception e)
+            {
+                _logger.LogError($"Error call job {job.Name}: {e}");
+                log.Status = LogConstant.SUCESSS;
+                log.Output = e.Message;
+            }
+            log.EndTime = DateTime.Now;
+            _context.Logs.Add(log);
+            await _context.SaveChangesAsync();
         }
     }
 
@@ -61,7 +86,7 @@ public class UserCronJob : IJob
         return responseBody;
     }
     
-    private static async Task<string> PostApi(string url, object? headers = null, object? payload = null)
+    private static async Task<string> PostApi(string url, object? headers = null, string? payload = null)
     {
         using var client = new HttpClient();
         if (headers != null)
@@ -71,7 +96,7 @@ public class UserCronJob : IJob
             client.DefaultRequestHeaders.TryAddWithoutValidation("headers", jsonHeaders);
         }
 
-        var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+        var content = new StringContent(payload ?? "", Encoding.UTF8, "application/json");
         HttpResponseMessage response = await client.PostAsync(url, content);
         response.EnsureSuccessStatusCode();
 
@@ -79,7 +104,7 @@ public class UserCronJob : IJob
         return responseBody;
     }
     
-    private static async Task<string> PutApi(string url, object? headers = null, object? payload = null)
+    private static async Task<string> PutApi(string url, object? headers = null, string? payload = null)
     {
         using var client = new HttpClient();
         if (headers != null)
@@ -89,7 +114,7 @@ public class UserCronJob : IJob
             client.DefaultRequestHeaders.TryAddWithoutValidation("headers", jsonHeaders);
         }
 
-        var content = new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json");
+        var content = new StringContent(payload ?? "", Encoding.UTF8, "application/json");
         HttpResponseMessage response = await client.PutAsync(url, content);
         response.EnsureSuccessStatusCode();
 

@@ -15,7 +15,12 @@ namespace prn_job_manager.Pages
 
         public void OnGet()
         {
-
+            // get session
+            var email = HttpContext.Session.GetString("email");
+            if (email != null)
+            {
+                Response.Redirect("/scheduler");
+            }
         }
     }
 }

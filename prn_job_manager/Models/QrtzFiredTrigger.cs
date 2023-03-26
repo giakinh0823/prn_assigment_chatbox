@@ -16,7 +16,7 @@ namespace prn_job_manager.Models
         public string State { get; set; } = null!;
         public string? JobName { get; set; }
         public string? JobGroup { get; set; }
-        public string? IsNonconcurrent { get; set; }
-        public string? RequestsRecovery { get; set; }
+        public bool? IsNonconcurrent { get; set; }
+        public bool? RequestsRecovery { get; set; }
     }
 }

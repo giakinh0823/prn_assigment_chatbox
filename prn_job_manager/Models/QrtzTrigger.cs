@@ -19,7 +19,7 @@ namespace prn_job_manager.Models
         public long StartTime { get; set; }
         public long? EndTime { get; set; }
         public string? CalendarName { get; set; }
-        public short? MisfireInstr { get; set; }
+        public int? MisfireInstr { get; set; }
         public byte[]? JobData { get; set; }
 
         public virtual QrtzJobDetail QrtzJobDetail { get; set; } = null!;
