@@ -21,7 +21,8 @@ namespace prn_job_manager.Pages.Scheduler
         [BindProperty(Name = "id", SupportsGet = true)]
         public int? Id { get; set; } = default!;
 
-        public Job Job { get; set; } = default!; 
+        public Job Job { get; set; } = default!;
+        public List<Log> Logs { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync()
         {
@@ -29,7 +30,6 @@ namespace prn_job_manager.Pages.Scheduler
             {
                 return NotFound();
             }
-
             var job = await _context.Jobs
                 .Include(x => x.Logs.OrderByDescending(x => x.LogId))
                 .ThenInclude(x => x.User)
@@ -42,6 +42,7 @@ namespace prn_job_manager.Pages.Scheduler
             {
                 Job = job;
             }
+            Logs = job.Logs.ToList();
             return Page();
         }
     }

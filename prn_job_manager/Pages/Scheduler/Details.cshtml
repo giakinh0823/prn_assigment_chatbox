@@ -24,17 +24,17 @@
                             <ul>
                                 <table class="table" style="width: 100%;">
                                     <thead>
-                                        <tr>
-                                            <th scope="col">Job Name</th>
-                                            <th scope="col">User</th>
-                                            <th scope="col">Response</th>
-                                            <th scope="col">Status</th>
-                                            <th scope="col">Start</th>
-                                            <th scope="col">End</th>
-                                        </tr>
+                                    <tr>
+                                        <th scope="col">Job Name</th>
+                                        <th scope="col">User</th>
+                                        <th scope="col">Response</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Start</th>
+                                        <th scope="col">End</th>
+                                    </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach (var item in Model.Job.Logs)
+                                    @foreach (var item in @Model.Logs)
                                     {
                                         <tr scope="row">
                                             <td>@Model.Job.Name</td>
