@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using prn_job_manager.Hubs;
 using prn_job_manager.Models;
 using Quartz;
+using Stripe;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -58,6 +59,7 @@ builder.Services.AddQuartzHostedService(options =>
     options.WaitForJobsToComplete = true;
 });
 
+StripeConfiguration.ApiKey = "sk_test_51KDm2BJWdKsH8AduH2n1X1V0wD4v1cNBvgXHPtEMqDNbo7LUvXWEsYTwOUeoiqkRDPAfz8lxTmF6Fb9HjJ8EkIHM00ZmeAIFBB";
 
 var app = builder.Build();
 
