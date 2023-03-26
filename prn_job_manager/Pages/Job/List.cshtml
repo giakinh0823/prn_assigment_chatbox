@@ -23,7 +23,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="bg-gray-50 overflow-hidden sm:rounded-md bg-gray-50 border-solid border-gray-100 border-2">
+                        <div class="bg-gray-50 sm:rounded-md bg-gray-50 border-solid border-gray-100 border-2 overflow-auto">
                             <ul>
                                 <div class="mt-4 flex-shrink-0 flex">
                                     <span class="inline-flex rounded-md shadow-sm">
@@ -84,7 +84,8 @@
                                                 {
                                                     <td></td>
                                                 }
-                                                <td><a asp-page="/EditPage" asp-route-id="@item.JobId" class="btn btn-success">Edit</a> </td>
+                                                <td><a asp-page="Edit" asp-route-id="@item.JobId" class="btn btn-success">Edit</a> </td>
+                                                <td><a asp-page="Delete" asp-page-handler="delete" asp-route-id="@item.JobId" class="btn btn-danger">Delete</a> </td>
                                             </tr>
                                         }
                                     </tbody>
