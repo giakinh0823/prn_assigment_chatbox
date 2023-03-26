@@ -75,11 +75,11 @@ namespace prn_job_manager.Pages.Job
                     if (user.Email != null)
                     {
                         IJobDetail job = JobBuilder.Create<UserCronJob>()
-                            .WithIdentity(Job.JobId.ToString(), user.Email)
+                            .WithIdentity(Job.JobId.ToString(), user.UserId.ToString())
                             .Build();
                     
                         ITrigger trigger = TriggerBuilder.Create()
-                            .WithIdentity(Job.JobId.ToString(), user.Email)
+                            .WithIdentity(Job.JobId.ToString(), user.UserId.ToString())
                             .WithCronSchedule(Job.Expression)
                             .Build();
             

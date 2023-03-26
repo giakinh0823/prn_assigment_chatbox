@@ -44,7 +44,7 @@ namespace prn_job_manager.Pages.Job
             if (job != null)
             {
                 IScheduler scheduler = await _schedulerFactory.GetScheduler();
-                if (user.Email != null) await scheduler.DeleteJob(new JobKey(job.JobId.ToString(), user.Email));
+                await scheduler.DeleteJob(new JobKey(job.JobId.ToString(), user.UserId.ToString()));
                 _context.Jobs.Remove(job);
                 await _context.SaveChangesAsync();
             }

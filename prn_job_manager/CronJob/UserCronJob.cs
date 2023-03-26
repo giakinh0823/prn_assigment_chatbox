@@ -11,19 +11,30 @@ namespace prn_job_manager.CronJob;
 public class UserCronJob : IJob
 {
     private readonly cron_jobContext _context;
+    private readonly ILogger<UserCronJob> _logger;
 
-    public UserCronJob(cron_jobContext context)
+    public UserCronJob(cron_jobContext context, ILogger<UserCronJob> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     [Obsolete("Obsolete")]
     public async Task Execute(IJobExecutionContext context)
     {
         int jobId = int.Parse(context.JobDetail.Key.Name);
+        int userId = int.Parse(context.JobDetail.Key.Group);
+        
         var job = await _context.Jobs.FirstOrDefaultAsync(x => x.JobId == jobId);
         if (job is { Webhook: { }, Method: { } })
         {
+            User? user = await _context.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            Log log = new Log()
+            {
+                JobId = job.JobId,
+                UserId = user?.UserId ?? null,
+                StartTime = DateTime.Now,
+            };
             try
             {
                 string? response = null;
@@ -42,13 +53,19 @@ public class UserCronJob : IJob
                         response = await DeleteApi(job.Webhook, job.Header);
                         break;
                 }
-                Console.WriteLine(response);
+                log.Status = LogConstant.SUCESSS;
+                log.Output = response;
+                _logger.LogInformation($"Success call job {job.Name}");
             }
             catch (Exception e)
             {
-                Console.WriteLine($"Error call job {job.Name} url {job.Webhook} : {e}");
-                throw;
+                _logger.LogError($"Error call job {job.Name}: {e}");
+                log.Status = LogConstant.SUCESSS;
+                log.Output = e.Message;
             }
+            log.EndTime = DateTime.Now;
+            _context.Logs.Add(log);
+            await _context.SaveChangesAsync();
         }
     }
 
