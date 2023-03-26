@@ -8,13 +8,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddControllers();
-
 builder.Services.AddSignalR();
-
 builder.Services.AddDbContext<cron_jobContext>(options => options.UseSqlServer
-    (builder.Configuration.GetConnectionString("SqlConnection")));
-
+(builder.Configuration.GetConnectionString("SqlConnection")));
 builder.Services.AddSession();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
 {

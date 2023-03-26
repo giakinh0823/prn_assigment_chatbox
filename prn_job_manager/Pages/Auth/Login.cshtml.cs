@@ -74,4 +74,6 @@ namespace prn_job_manager.Pages.Auth
             return RedirectToPage("../Index");
         }
     }
+
+
 }

@@ -1,23 +1,21 @@
-using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using prn_job_manager.Models;
 
 namespace prn_job_manager.Pages.Job
 {
-    [FptAuthorize]
     public class ListModel : PageModel
     {
-        private readonly cron_jobContext _context;
+        private readonly cron_jobContext context;
 
-        public ListModel(cron_jobContext context)
+        public ListModel(cron_jobContext _context)
         {
-            _context = context;
+            context = _context;
         }
-        public List<Models.Job> List { get; set; } = default!;
-        
+        public List<Models.Job> list { get; set; } = default!;
         public void OnGet()
         {
-            List = _context.Jobs.ToList();
+            list = context.Jobs.ToList();
         }
     }
 }

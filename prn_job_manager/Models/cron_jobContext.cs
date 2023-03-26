@@ -18,7 +18,6 @@ namespace prn_job_manager.Models
 
         public virtual DbSet<Job> Jobs { get; set; } = null!;
         public virtual DbSet<Log> Logs { get; set; } = null!;
-        public virtual DbSet<PaymentInfo> PaymentInfos { get; set; } = null!;
         public virtual DbSet<QrtzBlobTrigger> QrtzBlobTriggers { get; set; } = null!;
         public virtual DbSet<QrtzCalendar> QrtzCalendars { get; set; } = null!;
         public virtual DbSet<QrtzCronTrigger> QrtzCronTriggers { get; set; } = null!;
@@ -98,10 +97,6 @@ namespace prn_job_manager.Models
             {
                 entity.ToTable("Log");
 
-                entity.HasIndex(e => e.JobId, "IX_Log_job_id");
-
-                entity.HasIndex(e => e.UserId, "IX_Log_user_id");
-
                 entity.Property(e => e.LogId).HasColumnName("log_id");
 
                 entity.Property(e => e.EndTime)
@@ -136,45 +131,11 @@ namespace prn_job_manager.Models
                     .HasConstraintName("FK__Log__user_id__2C3393D0");
             });
 
-            modelBuilder.Entity<PaymentInfo>(entity =>
-            {
-                entity.HasKey(e => e.PaymentId)
-                    .HasName("PK__payment___ED1FC9EA86974A72");
-
-                entity.ToTable("payment_info");
-
-                entity.Property(e => e.PaymentId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("payment_id");
-
-                entity.Property(e => e.EndDate)
-                    .HasColumnType("date")
-                    .HasColumnName("end_date");
-
-                entity.Property(e => e.PaymentAmount)
-                    .HasColumnType("decimal(10, 2)")
-                    .HasColumnName("payment_amount");
-
-                entity.Property(e => e.PaymentDate)
-                    .HasColumnType("date")
-                    .HasColumnName("payment_date");
-
-                entity.Property(e => e.StartDate)
-                    .HasColumnType("date")
-                    .HasColumnName("start_date");
-
-                entity.Property(e => e.Status).HasColumnName("status");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-            });
-
             modelBuilder.Entity<QrtzBlobTrigger>(entity =>
             {
                 entity.HasNoKey();
 
                 entity.ToTable("QRTZ_BLOB_TRIGGERS");
-
-                entity.HasIndex(e => new { e.SchedName, e.TriggerName, e.TriggerGroup }, "IX_QRTZ_BLOB_TRIGGERS_SCHED_NAME_TRIGGER_NAME_TRIGGER_GROUP");
 
                 entity.Property(e => e.BlobData).HasColumnName("BLOB_DATA");
 
@@ -542,8 +503,6 @@ namespace prn_job_manager.Models
 
                 entity.HasIndex(e => new { e.SchedName, e.TriggerName, e.TriggerGroup }, "IX_QRTZ_TRIGGERS_QRTZ_JOB_DETAILS");
 
-                entity.HasIndex(e => new { e.SchedName, e.JobName, e.JobGroup }, "IX_QRTZ_TRIGGERS_SCHED_NAME_JOB_NAME_JOB_GROUP");
-
                 entity.Property(e => e.SchedName)
                     .HasMaxLength(120)
                     .IsUnicode(false)
@@ -645,10 +604,6 @@ namespace prn_job_manager.Models
                 entity.HasNoKey();
 
                 entity.ToTable("User_Job");
-
-                entity.HasIndex(e => e.JobId, "IX_User_Job_job_id");
-
-                entity.HasIndex(e => e.UserId, "IX_User_Job_user_id");
 
                 entity.Property(e => e.JobId).HasColumnName("job_id");
 
