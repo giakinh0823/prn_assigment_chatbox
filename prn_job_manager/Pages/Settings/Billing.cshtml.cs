@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using prn_job_manager.Constant;
 using prn_job_manager.Models;
 using Quartz;
 using Stripe.Checkout;
@@ -32,6 +33,16 @@ public class BillingModel : PageModel
         
         if(month == null) return new RedirectResult("/Settings/Billing");
         int price = (int)(month * 39000);
+
+        PaymentInfo paymentInfo = new PaymentInfo()
+        {
+            UserId = user!.UserId,
+            PaymentAmount = price,
+            StartDate = DateTime.Now,
+            EndDate = DateTime.Now.AddMonths((int)month),
+            Status = PaymentStatusConstant.PENDING,
+        };
+        _context.PaymentInfos.Add(paymentInfo);
         
         var domain = "http://localhost:44315";
         
