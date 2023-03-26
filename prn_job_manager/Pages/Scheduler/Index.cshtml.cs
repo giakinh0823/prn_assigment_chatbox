@@ -4,15 +4,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using prn_job_manager.Models;
 using Quartz;
 
-namespace prn_job_manager.Pages.Job
+namespace prn_job_manager.Pages.Scheduler
 {
     [FptAuthorize]
-    public class ListModel : PageModel
+    public class IndexModel : PageModel
     {
         private readonly cron_jobContext _context;
         private readonly ISchedulerFactory _schedulerFactory;
 
-        public ListModel(cron_jobContext context, ISchedulerFactory schedulerFactory)
+        public IndexModel(cron_jobContext context, ISchedulerFactory schedulerFactory)
         {
             _context = context;
             _schedulerFactory = schedulerFactory;

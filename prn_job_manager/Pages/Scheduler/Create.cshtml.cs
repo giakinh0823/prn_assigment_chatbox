@@ -6,7 +6,7 @@ using prn_job_manager.CronJob;
 using prn_job_manager.Models;
 using Quartz;
 
-namespace prn_job_manager.Pages.Job
+namespace prn_job_manager.Pages.Scheduler
 {
     [FptAuthorize]
     public class CreateModel : PageModel

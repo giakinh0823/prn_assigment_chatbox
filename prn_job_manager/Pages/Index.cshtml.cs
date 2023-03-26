@@ -19,7 +19,7 @@ namespace prn_job_manager.Pages
             var email = HttpContext.Session.GetString("email");
             if (email != null)
             {
-                Response.Redirect("/job/list");
+                Response.Redirect("/scheduler");
             }
         }
     }

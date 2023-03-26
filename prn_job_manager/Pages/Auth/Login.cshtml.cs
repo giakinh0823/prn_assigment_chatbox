@@ -50,7 +50,7 @@ namespace prn_job_manager.Pages.Auth
                         });
                     }
                     HttpContext.Session.SetString("email", p.Email!);
-                    return RedirectToPage("/Job/List");
+                    return RedirectToPage("/scheduler/index");
 
                 }
                 else
@@ -61,7 +61,7 @@ namespace prn_job_manager.Pages.Auth
             }
             else
             {
-                return RedirectToPage("../Index");
+                return RedirectToPage("/auth/login");
             }
         }
 
