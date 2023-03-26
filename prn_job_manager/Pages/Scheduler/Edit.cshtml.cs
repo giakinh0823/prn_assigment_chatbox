@@ -39,7 +39,7 @@ namespace prn_job_manager.Pages.Scheduler
             
             List<Job> jobs = _context.Jobs.Where(j => j.UserId == user.UserId).ToList();
             PaymentInfo? paymentInfo = _context.PaymentInfos.FirstOrDefault(x => x.UserId == user.UserId);
-            if (jobs.Count >= 1 && (paymentInfo == null || !PaymentStatusConstant.ACTIVE.Equals(paymentInfo?.Status)
+            if (jobs.Count > 1 && (paymentInfo == null || !PaymentStatusConstant.ACTIVE.Equals(paymentInfo?.Status)
                                                         || paymentInfo.EndDate <= DateTime.Now))
             {
                 return new RedirectResult("/settings/billing");
