@@ -60,21 +60,21 @@ namespace prn_job_manager.Pages.Job
             
             if (JobConstant.Status.ACTIVE.Equals(Job.Status.ToUpper()))
             {
-                IScheduler scheduler = await _schedulerFactory.GetScheduler();
-
-                IJobDetail job = JobBuilder.Create<UserCronJob>()
-                    .WithIdentity(Job.JobId.ToString(), user.UserId.ToString())
-                    .Build();
-            
                 if (Job.Expression != null)
                 {
+                    IScheduler scheduler = await _schedulerFactory.GetScheduler();
+
+                    IJobDetail job = JobBuilder.Create<UserCronJob>()
+                        .WithIdentity(Job.JobId.ToString(), user.UserId.ToString())
+                        .Build();
+                    
                     ITrigger trigger = TriggerBuilder.Create()
                         .WithIdentity(Job.JobId.ToString(), user.UserId.ToString())
                         .WithCronSchedule(Job.Expression)
                         .Build();
             
                     await scheduler.ScheduleJob(job, trigger);
-                }
+                } 
             }
             return RedirectToPage("/job/list");
         }
