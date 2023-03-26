@@ -5,6 +5,7 @@ namespace prn_job_manager.Controllers;
 
 [AllowAnonymous]
 [ApiController]
+[Produces("application/json")]
 [Route("api/[controller]")]
 public class PingController : Controller
 {
@@ -22,8 +23,14 @@ public class PingController : Controller
     }
     
     [HttpPost("payload")]
-    public IActionResult Payload([FromBody] string payload)
+    public IActionResult Payload([FromBody] ResultModel payload)
     {
+        // return json
         return Ok(payload);
     }
+}
+
+public class ResultModel
+{
+    public string? Name { get; set; }
 }
