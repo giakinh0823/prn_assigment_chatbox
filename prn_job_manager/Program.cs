@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
 builder.Services.AddControllers();
 
 builder.Services.AddSignalR();
@@ -31,12 +32,12 @@ builder.Services.AddQuartz(q =>
 
     q.UsePersistentStore(x =>
     {
-        var conf = new ConfigurationBuilder()
-            .SetBasePath(Directory.GetCurrentDirectory())
-            .AddJsonFile("appsettings.json").Build();
+        x.UseProperties = true;
+        x.UseClustering();
+        // there are other SQL providers supported too 
         x.UseSqlServer(sqlsever =>
         {
-            sqlsever.ConnectionString = conf.GetConnectionString("SqlConnection");
+            sqlsever.ConnectionString = builder.Configuration.GetConnectionString("SqlConnection");;
             sqlsever.TablePrefix = "QRTZ_";
         });
         // this requires Quartz.Serialization.Json NuGet package
