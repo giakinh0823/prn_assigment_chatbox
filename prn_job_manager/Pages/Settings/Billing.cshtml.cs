@@ -18,7 +18,22 @@ public class BillingModel : PageModel
     }
     public void OnGet()
     {
+        var email = HttpContext.Session.GetString("email");
+        if (email == null)
+        {
+            Response.Redirect("/auth/login");
+        }
+
+        User? user = _context.Users.FirstOrDefault(x => x.Email == email);
         
+        ViewData["paymentInfo"] = "You're on Free Plan";
+
+        PaymentInfo? paymentInfo = _context.PaymentInfos.FirstOrDefault(x => x.UserId == user.UserId);
+        if (paymentInfo != null && PaymentStatusConstant.ACTIVE.Equals(paymentInfo?.Status)
+            && paymentInfo.EndDate > DateTime.Now)
+        {
+            ViewData["paymentInfo"] = "Expire time " + paymentInfo?.EndDate.ToString("dd/MM/yyyy");
+        }
     }
     
     public async Task<RedirectResult> OnPost(int? month)
@@ -34,18 +49,37 @@ public class BillingModel : PageModel
         if(month == null) return new RedirectResult("/Settings/Billing");
         int price = (int)(month * 39000);
 
-        PaymentInfo paymentInfo = new PaymentInfo()
+        PaymentInfo? paymentInfo = _context.PaymentInfos.FirstOrDefault(x => x.UserId == user.UserId);
+
+        if (paymentInfo == null)
         {
-            UserId = user!.UserId,
-            PaymentAmount = price,
-            StartDate = DateTime.Now,
-            EndDate = DateTime.Now.AddMonths((int)month),
-            Status = PaymentStatusConstant.PENDING,
-        };
-        _context.PaymentInfos.Add(paymentInfo);
-        await _context.SaveChangesAsync();
-        
-        var domain = "http://localhost:44315";
+            paymentInfo = new PaymentInfo()
+            {
+                UserId = user!.UserId,
+                PaymentAmount = price,
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddMonths((int)month),
+                Status = PaymentStatusConstant.PENDING,
+            };
+            _context.PaymentInfos.Add(paymentInfo);
+            await _context.SaveChangesAsync();   
+        }
+        else
+        {
+            if (paymentInfo.EndDate > DateTime.Now && PaymentStatusConstant.ACTIVE.Equals(paymentInfo?.Status))
+            {
+                return new RedirectResult("/Settings/Billing");
+            }
+            paymentInfo.UserId = user!.UserId;
+            paymentInfo.PaymentAmount = price;
+            paymentInfo.StartDate = DateTime.Now;
+            paymentInfo.EndDate = DateTime.Now.AddMonths((int)month);
+            paymentInfo.Status = PaymentStatusConstant.PENDING;
+            _context.PaymentInfos.Update(paymentInfo);
+            await _context.SaveChangesAsync();   
+        }
+
+        var domain = "https://localhost:44315";
         
         var options = new SessionCreateOptions()
         {
@@ -66,8 +100,8 @@ public class BillingModel : PageModel
                 },
             },
             Mode = "payment",
-            SuccessUrl = domain + "/settings/billing/success/" + paymentInfo.PaymentId,
-            CancelUrl = domain + "/settings/billing/cancel/" + paymentInfo.PaymentId,
+            SuccessUrl = domain + "/api/settings/billing/success/" + paymentInfo.PaymentId,
+            CancelUrl = domain + "/api/settings/billing/cancel/" + paymentInfo.PaymentId,
         };
         var service = new SessionService();
         Session session = service.Create(options);

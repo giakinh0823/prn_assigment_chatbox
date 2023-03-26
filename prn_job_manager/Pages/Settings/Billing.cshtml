@@ -59,8 +59,15 @@
                                             <div>
                                                 <div class="flex justify-between">
                                                     <h2 class="px-6 pt-4 text-xl font-semibold text-gray-700">
-                                                        You're on Free Plan
-                                                        <!---->
+                                                        @if (ViewData["paymentInfo"] == null)
+                                                        {
+                                                            <div>You're on Free Plan</div>
+                                                        } else
+                                                        {
+                                                            <span class="text-sm font-normal text-gray-500">
+                                                                @ViewData["paymentInfo"]
+                                                            </span>
+                                                        }
                                                     </h2>
                                                 </div> <div class="px-6 pb-4">
                                                     <div class="mt-2 text-md font-semibold text-gray-700"><span></span></div> <div class="mt-3 space-y-2">

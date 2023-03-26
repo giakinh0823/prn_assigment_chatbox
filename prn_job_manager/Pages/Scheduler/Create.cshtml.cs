@@ -22,6 +22,21 @@ namespace prn_job_manager.Pages.Scheduler
         public Models.Job Job { get; set; } = default!;
         public async Task<IActionResult> OnPost()
         {
+            string? email = HttpContext.Session.GetString("email");
+            if(email == null)
+            {
+                return Redirect("/auth/login");
+            }
+            User? user = _context.Users.FirstOrDefault(u => u.Email!.Equals(email));
+            if(user == null)  return Redirect("/auth/login");
+            
+            PaymentInfo? paymentInfo = _context.PaymentInfos.FirstOrDefault(x => x.UserId == user.UserId);
+            if (paymentInfo == null || PaymentStatusConstant.ACTIVE.Equals(paymentInfo?.Status)
+                                    || paymentInfo.EndDate > DateTime.Now)
+            {
+                return Redirect("/settings/billing");
+            }
+            
             if (Job.Status == null || (!JobConstant.Status.ACTIVE.Equals(Job.Status.ToUpper())
                                        && !JobConstant.Status.INACTIVE.Equals(Job.Status.ToUpper())))
             {
@@ -57,15 +72,7 @@ namespace prn_job_manager.Pages.Scheduler
             Job.UpdatedAt = DateTime.Now;
             _context.Jobs.Add(Job);
             await _context.SaveChangesAsync();
-            
-            string? email = HttpContext.Session.GetString("email");
-            if(email == null)
-            {
-                return Redirect("/auth/login");
-            }
-            User? user = _context.Users.FirstOrDefault(u => u.Email!.Equals(email));
-            if(user == null)  return Redirect("/auth/login");
-            
+
             if (JobConstant.Status.ACTIVE.Equals(Job.Status.ToUpper()))
             {
                 if (Job.Expression != null)
