@@ -14,13 +14,14 @@ namespace prn_job_manager.Pages
     {
         private readonly cron_jobContext _context;
 
-        public RegisterModel(cron_jobContext _context)
+        public RegisterModel(cron_jobContext context)
         {
-            this._context = _context;
+            _context = context;
         }
-
+        
         [BindProperty]
-        public User user { get; set; }
+        public User? User { get; set; }
+        
         public IActionResult OnGet()
         {
             
@@ -33,29 +34,21 @@ namespace prn_job_manager.Pages
 
         public async Task<IActionResult> OnPost(User? user, string? confirmPass)
         {
-            
             if (ModelState.IsValid)
             {
-
-
-                var p = await _context.Users.FirstOrDefaultAsync(x => x.Email == user.Email);
+                var p = await _context.Users.FirstOrDefaultAsync(x => user != null && x.Email == user.Email);
                 if (p == null)
                 {
-                    
-                    await _context.Users.AddAsync(user);
+                    if (user != null) await _context.Users.AddAsync(user);
                     await _context.SaveChangesAsync();
                     return RedirectToPage("Login");
                 }
-                else
-                {
-                    ViewData["emailExist"] = "Email này đã tồn tại, Vui lòng lựa chọn email khác";
-                    return Page();
-                }
+
+                ViewData["emailExist"] = "Email này đã tồn tại, Vui lòng lựa chọn email khác";
+                return Page();
 
             }
-
             return Page();
-
         }
     }
 

@@ -38,32 +38,32 @@
                         <input type="hidden" name="_token">
                         <div asp-validation-summary="All" class="text-danger"></div>
                         <div class="mt-1">
-                            <label for="email" class="form-label" asp-for="@Model.user.Name">
+                            <label for="email" class="form-label" asp-for="@Model.User!.Name">
                                 UserName
                             </label>
                             <div class="mt-1 rounded-md shadow-sm">
-                                <input id="name" name="name" type="text" value="" required="" style="width:100%" asp-for="@Model.user.Name" class="form-control">
+                                <input id="name" name="name" type="text" value="" required="" style="width:100%" asp-for="@Model.User!.Name" class="form-control">
                             </div>
-                            <span class="text-danger" asp-validation-for="@Model.user.Name"></span><br />
+                            <span class="text-danger" asp-validation-for="@Model.User!.Name"></span><br />
                         </div>
                         <div class="mt-1">
-                            <label for="email" class=" text-sm font-medium leading-5 text-gray-700" asp-for="@Model.user.Email">
+                            <label for="email" class=" text-sm font-medium leading-5 text-gray-700" asp-for="@Model.User!.Email">
                                 Email
                             </label>
                             <div class="mt-1 rounded-md shadow-sm">
-                                <input id="email" name="email" type="email" value="" required="" style="width:100%" asp-for="@Model.user.Email">
+                                <input id="email" name="email" type="email" value="" required="" style="width:100%" asp-for="@Model.User!.Email">
                             </div>
-                            <span class="text-danger" asp-validation-for="@Model.user.Email"></span><br />
+                            <span class="text-danger" asp-validation-for="@Model.User!.Email"></span><br />
                         </div>
 
                         <div class="mt-3">
-                            <label for="password" class=" text-sm font-medium leading-5 text-gray-700" asp-for="@Model.user.Password">
+                            <label for="password" class=" text-sm font-medium leading-5 text-gray-700" asp-for="@Model.User!.Password">
                                 Password
                             </label>
                             <div class="mt-1 rounded-md shadow-sm">
-                                <input id="password" name="password" type="password" required="" asp-for="@Model.user.Password" style="width:100%">
+                                <input id="password" name="password" type="password" required="" asp-for="@Model.User!.Password" style="width:100%">
                             </div>
-                            <span class="text-danger" asp-validation-for="@Model.user.Password"></span>
+                            <span class="text-danger" asp-validation-for="@Model.User!.Password"></span>
                         </div>
 
                         <div class="mt-3">
