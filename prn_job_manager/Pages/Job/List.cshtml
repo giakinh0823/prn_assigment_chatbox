@@ -85,7 +85,7 @@
                                                     <td></td>
                                                 }
                                                 <td><a asp-page="Edit" asp-route-id="@item.JobId" class="btn btn-success">Edit</a> </td>
-                                                <td><a asp-page="Delete" asp-page-handler="delete" asp-route-id="@item.JobId" class="btn btn-danger">Delete</a> </td>
+                                                <td><a asp-page-handler="delete" asp-route-id="@item.JobId" class="btn btn-danger">Delete</a> </td>
                                             </tr>
                                         }
                                     </tbody>
