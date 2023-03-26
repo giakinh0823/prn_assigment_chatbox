@@ -12,8 +12,12 @@ builder.Services.AddSignalR();
 builder.Services.AddDbContext<cron_jobContext>(options => options.UseSqlServer
 (builder.Configuration.GetConnectionString("SqlConnection")));
 builder.Services.AddSession();
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
-
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
+{
+    options.LoginPath = "/Auth/Login";
+    options.LogoutPath = "/Auth/Logout";
+    options.AccessDeniedPath = "/Auth/AccessDenied";
+});
 
 //  config quartz sql server store
 builder.Services.AddQuartz(q =>

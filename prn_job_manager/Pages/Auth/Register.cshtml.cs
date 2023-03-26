@@ -34,12 +34,17 @@ namespace prn_job_manager.Pages.Auth
                 var p = await _context.Users.FirstOrDefaultAsync(x => user != null && x.Email == user.Email);
                 if (p == null)
                 {
-                    if (user != null) await _context.Users.AddAsync(user);
+                    if (user != null)
+                    {
+                        user.CreatedAt = new DateTime();
+                        user.UpdatedAt = new DateTime();
+                        await _context.Users.AddAsync(user);
+                    }
                     await _context.SaveChangesAsync();
                     return RedirectToPage("Login");
                 }
 
-                ViewData["emailExist"] = "Email này đã tồn tại, Vui lòng lựa chọn email khác";
+                ViewData["EmailExist"] = "Email này đã tồn tại, Vui lòng lựa chọn email khác";
                 return Page();
 
             }

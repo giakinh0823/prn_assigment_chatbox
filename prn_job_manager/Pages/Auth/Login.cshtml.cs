@@ -49,17 +49,14 @@ namespace prn_job_manager.Pages.Auth
                             AllowRefresh = true
                         });
                     }
-
+                    HttpContext.Session.SetString("name", p.Name!);
                     HttpContext.Session.SetString("email", p.Email!);
-                    HttpContext.Session.SetString("name", p.Password!);
-
-
                     return RedirectToPage("../Index");
 
                 }
                 else
                 {
-                    ViewData["wrongaccount"] = "Email đăng nhập hoặc mật khẩu không đúng";
+                    ViewData["Error"] = "Email đăng nhập hoặc mật khẩu không đúng";
                     return Page();
                 }
             }
