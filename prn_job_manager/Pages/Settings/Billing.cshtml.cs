@@ -43,6 +43,7 @@ public class BillingModel : PageModel
             Status = PaymentStatusConstant.PENDING,
         };
         _context.PaymentInfos.Add(paymentInfo);
+        await _context.SaveChangesAsync();
         
         var domain = "http://localhost:44315";
         
@@ -65,9 +66,8 @@ public class BillingModel : PageModel
                 },
             },
             Mode = "payment",
-            SuccessUrl = domain + "/settings/billing/success",
-            CancelUrl = domain + "/settings/billing/cancel",
-            AutomaticTax = new SessionAutomaticTaxOptions { Enabled = true },
+            SuccessUrl = domain + "/settings/billing/success/" + paymentInfo.PaymentId,
+            CancelUrl = domain + "/settings/billing/cancel/" + paymentInfo.PaymentId,
         };
         var service = new SessionService();
         Session session = service.Create(options);
