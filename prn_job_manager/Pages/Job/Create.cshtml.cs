@@ -58,7 +58,7 @@ namespace prn_job_manager.Pages.Job
             User? user = _context.Users.FirstOrDefault(u => u.Email!.Equals(email));
             if(user == null)  return Redirect("/auth/login");
             
-            if (JobConstant.Status.ACTIVE.Equals(Job.Method))
+            if (JobConstant.Status.ACTIVE.Equals(Job.Status.ToUpper()))
             {
                 IScheduler scheduler = await _schedulerFactory.GetScheduler();
 

@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using prn_job_manager.Models;
 using Quartz;
@@ -13,7 +12,8 @@ builder.Services.AddControllers();
 builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<cron_jobContext>(options => options.UseSqlServer
-    (builder.Configuration.GetConnectionString("SqlConnection")));
+    (builder.Configuration.GetConnectionString("SqlConnection") 
+     ?? throw new InvalidOperationException("Connection string 'SqlConnection' not found.")));
 
 builder.Services.AddSession();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
@@ -28,25 +28,34 @@ builder.Services.AddQuartz(q =>
 {
     q.UseMicrosoftDependencyInjectionJobFactory();
     q.UseSimpleTypeLoader();
-    // q.UseInMemoryStore();
+
     q.UsePersistentStore(x =>
     {
-        x.UseProperties = true;
-        x.UseClustering();
-        x.UseSqlServer(sqlSever =>
+        var conf = new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json").Build();
+        x.UseSqlServer(sqlsever =>
         {
-            sqlSever.ConnectionString = builder.Configuration.GetConnectionString("SqlConnection");
-            sqlSever.TablePrefix = "QRTZ_";
+            sqlsever.ConnectionString = conf.GetConnectionString("SqlConnection");
+            sqlsever.TablePrefix = "QRTZ_";
         });
         // this requires Quartz.Serialization.Json NuGet package
         x.UseJsonSerializer();
     });
+    
     q.UseDefaultThreadPool(tp =>
     {
         // Số luồng tối đa
         tp.MaxConcurrency = 10;
     });
 });
+
+builder.Services.AddQuartzHostedService(options =>
+{
+    // when shutting down we want jobs to complete gracefully
+    options.WaitForJobsToComplete = true;
+});
+
 
 var app = builder.Build();
 
