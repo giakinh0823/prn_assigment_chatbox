@@ -39,8 +39,8 @@
                         <input type="hidden" name="_token">
                         <div asp-validation-summary="All" class="text-danger"></div>
                         <div class="mt-1">
-                            <label for="email" class="form-label" asp-for="@Model.User!.Name">
-                                UserName
+                            <label for="name" class="form-label" asp-for="@Model.User!.Name">
+                                Full Name
                             </label>
                             <div class="mt-1 rounded-md shadow-sm">
                                 <input id="name" name="name" type="text" value="" required="" style="width:100%" asp-for="@Model.User!.Name" class="form-control">

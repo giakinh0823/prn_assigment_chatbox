@@ -5,7 +5,7 @@ using prn_job_manager.Models;
 
 namespace prn_job_manager.Pages.Job
 {
-    [Authorize]
+    [FptAuthorize]
     public class CreateModel : PageModel
     {
         private readonly cron_jobContext _context;

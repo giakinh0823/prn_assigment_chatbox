@@ -36,8 +36,8 @@ namespace prn_job_manager.Pages.Auth
                 {
                     if (user != null)
                     {
-                        user.CreatedAt = new DateTime();
-                        user.UpdatedAt = new DateTime();
+                        user.CreatedAt = DateTime.Now;
+                        user.UpdatedAt = DateTime.Now;
                         await _context.Users.AddAsync(user);
                     }
                     await _context.SaveChangesAsync();
