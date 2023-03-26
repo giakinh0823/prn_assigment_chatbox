@@ -50,8 +50,6 @@
                                             <th scope="col">Method</th>
                                             <th scope="col">Expression</th>
                                             <th scope="col">Status</th>
-                                            <th scope="col">CreatedAt</th>
-                                            <th scope="col">UpdatedAt</th>
                                             <th scope="col">Action</th>
                                         </tr>
                                     </thead>
@@ -68,22 +66,7 @@
                                                 <td>@item.Method</td>
                                                 <td>@item.Expression</td>
                                                 <td>@item.Status</td>
-                                                @if (item.CreatedAt != null)
-                                                {
-                                                    <td>@Convert.ToDateTime(@item.CreatedAt).ToString("dd/MM/yyyy")</td>   
-                                                }
-                                                else
-                                                {
-                                                    <td></td>
-                                                }
-                                                @if (item.UpdatedAt != null)
-                                                {
-                                                    <td>@Convert.ToDateTime(@item.UpdatedAt).ToString("dd/MM/yyyy")</td>
-                                                }
-                                                else
-                                                {
-                                                    <td></td>
-                                                }
+                                                
                                                 <td><a asp-page="Edit" asp-route-id="@item.JobId" class="btn btn-success">Edit</a> </td>
                                                 <td><a asp-page-handler="delete" asp-route-id="@item.JobId" class="btn btn-danger">Delete</a> </td>
                                             </tr>
