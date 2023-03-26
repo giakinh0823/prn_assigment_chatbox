@@ -21,6 +21,7 @@ namespace prn_job_manager.Models
         public string? Status { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }
+        public int? UserId { get; set; }
 
         public virtual ICollection<Log> Logs { get; set; }
     }

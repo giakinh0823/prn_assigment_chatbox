@@ -31,7 +31,6 @@ namespace prn_job_manager.Models
         public virtual DbSet<QrtzSimpropTrigger> QrtzSimpropTriggers { get; set; } = null!;
         public virtual DbSet<QrtzTrigger> QrtzTriggers { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
-        public virtual DbSet<UserJob> UserJobs { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -89,6 +88,8 @@ namespace prn_job_manager.Models
                     .HasColumnType("datetime")
                     .HasColumnName("updated_at");
 
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+
                 entity.Property(e => e.Webhook)
                     .IsUnicode(false)
                     .HasColumnName("webhook");
@@ -135,13 +136,11 @@ namespace prn_job_manager.Models
             modelBuilder.Entity<PaymentInfo>(entity =>
             {
                 entity.HasKey(e => e.PaymentId)
-                    .HasName("PK__payment___ED1FC9EA953B9D88");
+                    .HasName("PK__payment___ED1FC9EA73903F71");
 
                 entity.ToTable("payment_info");
 
-                entity.Property(e => e.PaymentId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("payment_id");
+                entity.Property(e => e.PaymentId).HasColumnName("payment_id");
 
                 entity.Property(e => e.EndDate)
                     .HasColumnType("date")
@@ -574,27 +573,6 @@ namespace prn_job_manager.Models
                 entity.Property(e => e.UpdatedAt)
                     .HasColumnType("datetime")
                     .HasColumnName("updated_at");
-            });
-
-            modelBuilder.Entity<UserJob>(entity =>
-            {
-                entity.HasNoKey();
-
-                entity.ToTable("User_Job");
-
-                entity.Property(e => e.JobId).HasColumnName("job_id");
-
-                entity.Property(e => e.UserId).HasColumnName("user_id");
-
-                entity.HasOne(d => d.Job)
-                    .WithMany()
-                    .HasForeignKey(d => d.JobId)
-                    .HasConstraintName("FK__User_Job__job_id__286302EC");
-
-                entity.HasOne(d => d.User)
-                    .WithMany()
-                    .HasForeignKey(d => d.UserId)
-                    .HasConstraintName("FK__User_Job__user_i__276EDEB3");
             });
 
             OnModelCreatingPartial(modelBuilder);
