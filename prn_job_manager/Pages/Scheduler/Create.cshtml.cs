@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using prn_job_manager.Constant;
@@ -19,7 +18,29 @@ namespace prn_job_manager.Pages.Scheduler
             _schedulerFactory = schedulerFactory;
         }
         [BindProperty]
-        public Models.Job Job { get; set; } = default!;
+        public Job Job { get; set; } = default!;
+
+        public async Task<IActionResult> OnGet()
+        {
+            string? email = HttpContext.Session.GetString("email");
+            if(email == null)
+            {
+                return Redirect("/auth/login");
+            }
+            User? user = _context.Users.FirstOrDefault(u => u.Email!.Equals(email));
+            if(user == null)  return Redirect("/auth/login");
+            
+            List<Job> jobs = _context.Jobs.Where(j => j.UserId == user.UserId).ToList();
+            PaymentInfo? paymentInfo = _context.PaymentInfos.FirstOrDefault(x => x.UserId == user.UserId);
+            if (jobs.Count >= 1 && (paymentInfo == null || !PaymentStatusConstant.ACTIVE.Equals(paymentInfo?.Status)
+                                                       || paymentInfo.EndDate <= DateTime.Now))
+            {
+                return new RedirectResult("/settings/billing");
+            }
+
+            return Page();
+        }
+        
         public async Task<IActionResult> OnPost()
         {
             string? email = HttpContext.Session.GetString("email");
@@ -30,9 +51,10 @@ namespace prn_job_manager.Pages.Scheduler
             User? user = _context.Users.FirstOrDefault(u => u.Email!.Equals(email));
             if(user == null)  return Redirect("/auth/login");
             
+            List<Job> jobs = _context.Jobs.Where(j => j.UserId == user.UserId).ToList();
             PaymentInfo? paymentInfo = _context.PaymentInfos.FirstOrDefault(x => x.UserId == user.UserId);
-            if (paymentInfo == null || PaymentStatusConstant.ACTIVE.Equals(paymentInfo?.Status)
-                                    || paymentInfo.EndDate > DateTime.Now)
+            if (jobs.Count >= 1 && (paymentInfo == null || !PaymentStatusConstant.ACTIVE.Equals(paymentInfo?.Status)
+                                        || paymentInfo.EndDate <= DateTime.Now))
             {
                 return Redirect("/settings/billing");
             }
@@ -66,6 +88,7 @@ namespace prn_job_manager.Pages.Scheduler
                 return Page();
             }
 
+            Job.UserId = user.UserId;
             Job.Method = Job.Method.ToUpper();
             Job.Status = Job.Status.ToUpper();
             Job.CreatedAt = DateTime.Now;
@@ -94,7 +117,7 @@ namespace prn_job_manager.Pages.Scheduler
                     }
                 } 
             }
-            return RedirectToPage("/job/list");
+            return RedirectToPage("/Scheduler");
         }
     }
 }
