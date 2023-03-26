@@ -117,7 +117,7 @@ namespace prn_job_manager.Pages.Scheduler
                     }
                 } 
             }
-            return RedirectToPage("/Scheduler");
+            return new RedirectResult("/Scheduler");
         }
     }
 }
