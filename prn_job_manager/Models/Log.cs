@@ -10,10 +10,10 @@ namespace prn_job_manager.Models
         public int? UserId { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? EndTime { get; set; }
-        public string Status { get; set; }
-        public string Output { get; set; }
+        public string? Status { get; set; }
+        public string? Output { get; set; }
 
-        public virtual Job Job { get; set; }
-        public virtual User User { get; set; }
+        public virtual Job? Job { get; set; }
+        public virtual User? User { get; set; }
     }
 }

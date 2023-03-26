@@ -16,17 +16,28 @@ namespace prn_job_manager.Models
         {
         }
 
-        public virtual DbSet<Job> Jobs { get; set; }
-        public virtual DbSet<Log> Logs { get; set; }
-        public virtual DbSet<User> Users { get; set; }
-        public virtual DbSet<UserJob> UserJobs { get; set; }
+        public virtual DbSet<Job> Jobs { get; set; } = null!;
+        public virtual DbSet<Log> Logs { get; set; } = null!;
+        public virtual DbSet<QrtzBlobTrigger> QrtzBlobTriggers { get; set; } = null!;
+        public virtual DbSet<QrtzCalendar> QrtzCalendars { get; set; } = null!;
+        public virtual DbSet<QrtzCronTrigger> QrtzCronTriggers { get; set; } = null!;
+        public virtual DbSet<QrtzFiredTrigger> QrtzFiredTriggers { get; set; } = null!;
+        public virtual DbSet<QrtzJobDetail> QrtzJobDetails { get; set; } = null!;
+        public virtual DbSet<QrtzLock> QrtzLocks { get; set; } = null!;
+        public virtual DbSet<QrtzPausedTriggerGrp> QrtzPausedTriggerGrps { get; set; } = null!;
+        public virtual DbSet<QrtzSchedulerState> QrtzSchedulerStates { get; set; } = null!;
+        public virtual DbSet<QrtzSimpleTrigger> QrtzSimpleTriggers { get; set; } = null!;
+        public virtual DbSet<QrtzSimpropTrigger> QrtzSimpropTriggers { get; set; } = null!;
+        public virtual DbSet<QrtzTrigger> QrtzTriggers { get; set; } = null!;
+        public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<UserJob> UserJobs { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseSqlServer("Server=localhost;Database=cron_job;user=sa;password=123456");
+                optionsBuilder.UseSqlServer("Server=HAGIAKINH;database=cron_job;Integrated security=true;TrustServerCertificate=true");
             }
         }
 
@@ -118,6 +129,444 @@ namespace prn_job_manager.Models
                     .WithMany(p => p.Logs)
                     .HasForeignKey(d => d.UserId)
                     .HasConstraintName("FK__Log__user_id__2C3393D0");
+            });
+
+            modelBuilder.Entity<QrtzBlobTrigger>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToTable("QRTZ_BLOB_TRIGGERS");
+
+                entity.Property(e => e.BlobData).HasColumnName("BLOB_DATA");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(120)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.TriggerGroup)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_GROUP");
+
+                entity.Property(e => e.TriggerName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_NAME");
+
+                entity.HasOne(d => d.QrtzTrigger)
+                    .WithMany()
+                    .HasForeignKey(d => new { d.SchedName, d.TriggerName, d.TriggerGroup })
+                    .HasConstraintName("FK_QRTZ_BLOB_TRIGGERS_QRTZ_TRIGGERS");
+            });
+
+            modelBuilder.Entity<QrtzCalendar>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.CalendarName });
+
+                entity.ToTable("QRTZ_CALENDARS");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(120)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.CalendarName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("CALENDAR_NAME");
+
+                entity.Property(e => e.Calendar).HasColumnName("CALENDAR");
+            });
+
+            modelBuilder.Entity<QrtzCronTrigger>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.TriggerName, e.TriggerGroup });
+
+                entity.ToTable("QRTZ_CRON_TRIGGERS");
+
+                entity.HasIndex(e => new { e.SchedName, e.TriggerName, e.TriggerGroup }, "IX_QRTZ_CRON_TRIGGERS_QRTZ_TRIGGERS");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(120)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.TriggerName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_NAME");
+
+                entity.Property(e => e.TriggerGroup)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_GROUP");
+
+                entity.Property(e => e.CronExpression)
+                    .HasMaxLength(120)
+                    .IsUnicode(false)
+                    .HasColumnName("CRON_EXPRESSION");
+
+                entity.Property(e => e.TimeZoneId)
+                    .HasMaxLength(80)
+                    .IsUnicode(false)
+                    .HasColumnName("TIME_ZONE_ID");
+
+                entity.HasOne(d => d.QrtzTrigger)
+                    .WithOne(p => p.QrtzCronTrigger)
+                    .HasForeignKey<QrtzCronTrigger>(d => new { d.SchedName, d.TriggerName, d.TriggerGroup })
+                    .HasConstraintName("FK_QRTZ_CRON_TRIGGERS_QRTZ_TRIGGERS");
+            });
+
+            modelBuilder.Entity<QrtzFiredTrigger>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.EntryId });
+
+                entity.ToTable("QRTZ_FIRED_TRIGGERS");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(120)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.EntryId)
+                    .HasMaxLength(95)
+                    .IsUnicode(false)
+                    .HasColumnName("ENTRY_ID");
+
+                entity.Property(e => e.FiredTime).HasColumnName("FIRED_TIME");
+
+                entity.Property(e => e.InstanceName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("INSTANCE_NAME");
+
+                entity.Property(e => e.IsNonconcurrent)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("IS_NONCONCURRENT");
+
+                entity.Property(e => e.JobGroup)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("JOB_GROUP");
+
+                entity.Property(e => e.JobName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("JOB_NAME");
+
+                entity.Property(e => e.Priority).HasColumnName("PRIORITY");
+
+                entity.Property(e => e.RequestsRecovery)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("REQUESTS_RECOVERY");
+
+                entity.Property(e => e.SchedTime).HasColumnName("SCHED_TIME");
+
+                entity.Property(e => e.State)
+                    .HasMaxLength(16)
+                    .IsUnicode(false)
+                    .HasColumnName("STATE");
+
+                entity.Property(e => e.TriggerGroup)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_GROUP");
+
+                entity.Property(e => e.TriggerName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_NAME");
+            });
+
+            modelBuilder.Entity<QrtzJobDetail>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.JobName, e.JobGroup });
+
+                entity.ToTable("QRTZ_JOB_DETAILS");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(120)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.JobName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("JOB_NAME");
+
+                entity.Property(e => e.JobGroup)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("JOB_GROUP");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(250)
+                    .IsUnicode(false)
+                    .HasColumnName("DESCRIPTION");
+
+                entity.Property(e => e.IsDurable)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("IS_DURABLE");
+
+                entity.Property(e => e.IsNonconcurrent)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("IS_NONCONCURRENT");
+
+                entity.Property(e => e.IsUpdateData)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("IS_UPDATE_DATA");
+
+                entity.Property(e => e.JobClassName)
+                    .HasMaxLength(250)
+                    .IsUnicode(false)
+                    .HasColumnName("JOB_CLASS_NAME");
+
+                entity.Property(e => e.JobData).HasColumnName("JOB_DATA");
+
+                entity.Property(e => e.RequestsRecovery)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("REQUESTS_RECOVERY");
+            });
+
+            modelBuilder.Entity<QrtzLock>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.LockName });
+
+                entity.ToTable("QRTZ_LOCKS");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(120)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.LockName)
+                    .HasMaxLength(40)
+                    .IsUnicode(false)
+                    .HasColumnName("LOCK_NAME");
+            });
+
+            modelBuilder.Entity<QrtzPausedTriggerGrp>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.TriggerGroup });
+
+                entity.ToTable("QRTZ_PAUSED_TRIGGER_GRPS");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(120)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.TriggerGroup)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_GROUP");
+            });
+
+            modelBuilder.Entity<QrtzSchedulerState>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.InstanceName });
+
+                entity.ToTable("QRTZ_SCHEDULER_STATE");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(120)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.InstanceName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("INSTANCE_NAME");
+
+                entity.Property(e => e.CheckinInterval).HasColumnName("CHECKIN_INTERVAL");
+
+                entity.Property(e => e.LastCheckinTime).HasColumnName("LAST_CHECKIN_TIME");
+            });
+
+            modelBuilder.Entity<QrtzSimpleTrigger>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.TriggerName, e.TriggerGroup });
+
+                entity.ToTable("QRTZ_SIMPLE_TRIGGERS");
+
+                entity.HasIndex(e => new { e.SchedName, e.TriggerName, e.TriggerGroup }, "IX_QRTZ_SIMPLE_TRIGGERS_QRTZ_TRIGGERS");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(120)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.TriggerName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_NAME");
+
+                entity.Property(e => e.TriggerGroup)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_GROUP");
+
+                entity.Property(e => e.RepeatCount).HasColumnName("REPEAT_COUNT");
+
+                entity.Property(e => e.RepeatInterval).HasColumnName("REPEAT_INTERVAL");
+
+                entity.Property(e => e.TimesTriggered).HasColumnName("TIMES_TRIGGERED");
+
+                entity.HasOne(d => d.QrtzTrigger)
+                    .WithOne(p => p.QrtzSimpleTrigger)
+                    .HasForeignKey<QrtzSimpleTrigger>(d => new { d.SchedName, d.TriggerName, d.TriggerGroup })
+                    .HasConstraintName("FK_QRTZ_SIMPLE_TRIGGERS_QRTZ_TRIGGERS");
+            });
+
+            modelBuilder.Entity<QrtzSimpropTrigger>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.TriggerName, e.TriggerGroup });
+
+                entity.ToTable("QRTZ_SIMPROP_TRIGGERS");
+
+                entity.HasIndex(e => new { e.SchedName, e.TriggerName, e.TriggerGroup }, "IX_QRTZ_SIMPROP_TRIGGERS_QRTZ_TRIGGERS");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(120)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.TriggerName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_NAME");
+
+                entity.Property(e => e.TriggerGroup)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_GROUP");
+
+                entity.Property(e => e.BoolProp1)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("BOOL_PROP_1");
+
+                entity.Property(e => e.BoolProp2)
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .HasColumnName("BOOL_PROP_2");
+
+                entity.Property(e => e.DecProp1)
+                    .HasColumnType("numeric(13, 4)")
+                    .HasColumnName("DEC_PROP_1");
+
+                entity.Property(e => e.DecProp2)
+                    .HasColumnType("numeric(13, 4)")
+                    .HasColumnName("DEC_PROP_2");
+
+                entity.Property(e => e.IntProp1).HasColumnName("INT_PROP_1");
+
+                entity.Property(e => e.IntProp2).HasColumnName("INT_PROP_2");
+
+                entity.Property(e => e.LongProp1).HasColumnName("LONG_PROP_1");
+
+                entity.Property(e => e.LongProp2).HasColumnName("LONG_PROP_2");
+
+                entity.Property(e => e.StrProp1)
+                    .HasMaxLength(512)
+                    .IsUnicode(false)
+                    .HasColumnName("STR_PROP_1");
+
+                entity.Property(e => e.StrProp2)
+                    .HasMaxLength(512)
+                    .IsUnicode(false)
+                    .HasColumnName("STR_PROP_2");
+
+                entity.Property(e => e.StrProp3)
+                    .HasMaxLength(512)
+                    .IsUnicode(false)
+                    .HasColumnName("STR_PROP_3");
+
+                entity.HasOne(d => d.QrtzTrigger)
+                    .WithOne(p => p.QrtzSimpropTrigger)
+                    .HasForeignKey<QrtzSimpropTrigger>(d => new { d.SchedName, d.TriggerName, d.TriggerGroup })
+                    .HasConstraintName("FK_QRTZ_SIMPROP_TRIGGERS_QRTZ_TRIGGERS");
+            });
+
+            modelBuilder.Entity<QrtzTrigger>(entity =>
+            {
+                entity.HasKey(e => new { e.SchedName, e.TriggerName, e.TriggerGroup });
+
+                entity.ToTable("QRTZ_TRIGGERS");
+
+                entity.HasIndex(e => new { e.SchedName, e.TriggerName, e.TriggerGroup }, "IX_QRTZ_TRIGGERS_QRTZ_JOB_DETAILS");
+
+                entity.Property(e => e.SchedName)
+                    .HasMaxLength(120)
+                    .IsUnicode(false)
+                    .HasColumnName("SCHED_NAME");
+
+                entity.Property(e => e.TriggerName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_NAME");
+
+                entity.Property(e => e.TriggerGroup)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_GROUP");
+
+                entity.Property(e => e.CalendarName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("CALENDAR_NAME");
+
+                entity.Property(e => e.Description)
+                    .HasMaxLength(250)
+                    .IsUnicode(false)
+                    .HasColumnName("DESCRIPTION");
+
+                entity.Property(e => e.EndTime).HasColumnName("END_TIME");
+
+                entity.Property(e => e.JobData).HasColumnName("JOB_DATA");
+
+                entity.Property(e => e.JobGroup)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("JOB_GROUP");
+
+                entity.Property(e => e.JobName)
+                    .HasMaxLength(200)
+                    .IsUnicode(false)
+                    .HasColumnName("JOB_NAME");
+
+                entity.Property(e => e.MisfireInstr).HasColumnName("MISFIRE_INSTR");
+
+                entity.Property(e => e.NextFireTime).HasColumnName("NEXT_FIRE_TIME");
+
+                entity.Property(e => e.PrevFireTime).HasColumnName("PREV_FIRE_TIME");
+
+                entity.Property(e => e.Priority).HasColumnName("PRIORITY");
+
+                entity.Property(e => e.StartTime).HasColumnName("START_TIME");
+
+                entity.Property(e => e.TriggerState)
+                    .HasMaxLength(16)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_STATE");
+
+                entity.Property(e => e.TriggerType)
+                    .HasMaxLength(8)
+                    .IsUnicode(false)
+                    .HasColumnName("TRIGGER_TYPE");
+
+                entity.HasOne(d => d.QrtzJobDetail)
+                    .WithMany(p => p.QrtzTriggers)
+                    .HasForeignKey(d => new { d.SchedName, d.JobName, d.JobGroup })
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_QRTZ_TRIGGERS_QRTZ_JOB_DETAILS");
             });
 
             modelBuilder.Entity<User>(entity =>
