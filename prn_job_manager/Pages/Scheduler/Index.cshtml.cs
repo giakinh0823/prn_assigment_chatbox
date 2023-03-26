@@ -69,7 +69,7 @@ namespace prn_job_manager.Pages.Scheduler
                 _context.Jobs.Remove(job);
                 await _context.SaveChangesAsync();
             }
-            return RedirectToPage("./List");
+            return new RedirectResult("/Scheduler");
         }
     }
 }

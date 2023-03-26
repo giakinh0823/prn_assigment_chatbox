@@ -101,20 +101,16 @@ namespace prn_job_manager.Pages.Scheduler
                 if (Job.Expression != null)
                 {
                     IScheduler scheduler = await _schedulerFactory.GetScheduler();
-
-                    if (user.Email != null)
-                    {
-                        IJobDetail job = JobBuilder.Create<UserCronJob>()
-                            .WithIdentity(Job.JobId.ToString(), user.UserId.ToString())
-                            .Build();
+                    IJobDetail job = JobBuilder.Create<UserCronJob>()
+                        .WithIdentity(Job.JobId.ToString(), user.UserId.ToString())
+                        .Build();
                     
-                        ITrigger trigger = TriggerBuilder.Create()
-                            .WithIdentity(Job.JobId.ToString(), user.UserId.ToString())
-                            .WithCronSchedule(Job.Expression)
-                            .Build();
+                    ITrigger trigger = TriggerBuilder.Create()
+                        .WithIdentity(Job.JobId.ToString(), user.UserId.ToString())
+                        .WithCronSchedule(Job.Expression)
+                        .Build();
             
-                        await scheduler.ScheduleJob(job, trigger);
-                    }
+                    await scheduler.ScheduleJob(job, trigger);
                 } 
             }
             return new RedirectResult("/Scheduler");
