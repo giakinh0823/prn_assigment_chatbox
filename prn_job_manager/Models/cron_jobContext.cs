@@ -18,6 +18,7 @@ namespace prn_job_manager.Models
 
         public virtual DbSet<Job> Jobs { get; set; } = null!;
         public virtual DbSet<Log> Logs { get; set; } = null!;
+        public virtual DbSet<PaymentInfo> PaymentInfos { get; set; } = null!;
         public virtual DbSet<QrtzBlobTrigger> QrtzBlobTriggers { get; set; } = null!;
         public virtual DbSet<QrtzCalendar> QrtzCalendars { get; set; } = null!;
         public virtual DbSet<QrtzCronTrigger> QrtzCronTriggers { get; set; } = null!;
@@ -36,10 +37,8 @@ namespace prn_job_manager.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var conf = new ConfigurationBuilder()
-                    .SetBasePath(Directory.GetCurrentDirectory())
-                    .AddJsonFile("appsettings.json").Build();
-                optionsBuilder.UseSqlServer(conf.GetConnectionString("SqlConnection"));
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=HAGIAKINH;database=cron_job;Integrated security=true;TrustServerCertificate=true");
             }
         }
 
@@ -133,33 +132,57 @@ namespace prn_job_manager.Models
                     .HasConstraintName("FK__Log__user_id__2C3393D0");
             });
 
+            modelBuilder.Entity<PaymentInfo>(entity =>
+            {
+                entity.HasKey(e => e.PaymentId)
+                    .HasName("PK__payment___ED1FC9EA953B9D88");
+
+                entity.ToTable("payment_info");
+
+                entity.Property(e => e.PaymentId)
+                    .ValueGeneratedNever()
+                    .HasColumnName("payment_id");
+
+                entity.Property(e => e.EndDate)
+                    .HasColumnType("date")
+                    .HasColumnName("end_date");
+
+                entity.Property(e => e.PaymentAmount)
+                    .HasColumnType("decimal(10, 2)")
+                    .HasColumnName("payment_amount");
+
+                entity.Property(e => e.PaymentDate)
+                    .HasColumnType("date")
+                    .HasColumnName("payment_date");
+
+                entity.Property(e => e.StartDate)
+                    .HasColumnType("date")
+                    .HasColumnName("start_date");
+
+                entity.Property(e => e.Status).HasColumnName("status");
+
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+            });
+
             modelBuilder.Entity<QrtzBlobTrigger>(entity =>
             {
-                entity.HasNoKey();
+                entity.HasKey(e => new { e.SchedName, e.TriggerName, e.TriggerGroup });
 
                 entity.ToTable("QRTZ_BLOB_TRIGGERS");
 
-                entity.Property(e => e.BlobData).HasColumnName("BLOB_DATA");
-
                 entity.Property(e => e.SchedName)
                     .HasMaxLength(120)
-                    .IsUnicode(false)
                     .HasColumnName("SCHED_NAME");
 
-                entity.Property(e => e.TriggerGroup)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
-                    .HasColumnName("TRIGGER_GROUP");
-
                 entity.Property(e => e.TriggerName)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("TRIGGER_NAME");
 
-                entity.HasOne(d => d.QrtzTrigger)
-                    .WithMany()
-                    .HasForeignKey(d => new { d.SchedName, d.TriggerName, d.TriggerGroup })
-                    .HasConstraintName("FK_QRTZ_BLOB_TRIGGERS_QRTZ_TRIGGERS");
+                entity.Property(e => e.TriggerGroup)
+                    .HasMaxLength(150)
+                    .HasColumnName("TRIGGER_GROUP");
+
+                entity.Property(e => e.BlobData).HasColumnName("BLOB_DATA");
             });
 
             modelBuilder.Entity<QrtzCalendar>(entity =>
@@ -170,12 +193,10 @@ namespace prn_job_manager.Models
 
                 entity.Property(e => e.SchedName)
                     .HasMaxLength(120)
-                    .IsUnicode(false)
                     .HasColumnName("SCHED_NAME");
 
                 entity.Property(e => e.CalendarName)
                     .HasMaxLength(200)
-                    .IsUnicode(false)
                     .HasColumnName("CALENDAR_NAME");
 
                 entity.Property(e => e.Calendar).HasColumnName("CALENDAR");
@@ -187,31 +208,24 @@ namespace prn_job_manager.Models
 
                 entity.ToTable("QRTZ_CRON_TRIGGERS");
 
-                entity.HasIndex(e => new { e.SchedName, e.TriggerName, e.TriggerGroup }, "IX_QRTZ_CRON_TRIGGERS_QRTZ_TRIGGERS");
-
                 entity.Property(e => e.SchedName)
                     .HasMaxLength(120)
-                    .IsUnicode(false)
                     .HasColumnName("SCHED_NAME");
 
                 entity.Property(e => e.TriggerName)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("TRIGGER_NAME");
 
                 entity.Property(e => e.TriggerGroup)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("TRIGGER_GROUP");
 
                 entity.Property(e => e.CronExpression)
                     .HasMaxLength(120)
-                    .IsUnicode(false)
                     .HasColumnName("CRON_EXPRESSION");
 
                 entity.Property(e => e.TimeZoneId)
                     .HasMaxLength(80)
-                    .IsUnicode(false)
                     .HasColumnName("TIME_ZONE_ID");
 
                 entity.HasOne(d => d.QrtzTrigger)
@@ -226,60 +240,52 @@ namespace prn_job_manager.Models
 
                 entity.ToTable("QRTZ_FIRED_TRIGGERS");
 
+                entity.HasIndex(e => new { e.SchedName, e.JobGroup, e.JobName }, "IDX_QRTZ_FT_G_J");
+
+                entity.HasIndex(e => new { e.SchedName, e.TriggerGroup, e.TriggerName }, "IDX_QRTZ_FT_G_T");
+
+                entity.HasIndex(e => new { e.SchedName, e.InstanceName, e.RequestsRecovery }, "IDX_QRTZ_FT_INST_JOB_REQ_RCVRY");
+
                 entity.Property(e => e.SchedName)
                     .HasMaxLength(120)
-                    .IsUnicode(false)
                     .HasColumnName("SCHED_NAME");
 
                 entity.Property(e => e.EntryId)
-                    .HasMaxLength(95)
-                    .IsUnicode(false)
+                    .HasMaxLength(140)
                     .HasColumnName("ENTRY_ID");
 
                 entity.Property(e => e.FiredTime).HasColumnName("FIRED_TIME");
 
                 entity.Property(e => e.InstanceName)
                     .HasMaxLength(200)
-                    .IsUnicode(false)
                     .HasColumnName("INSTANCE_NAME");
 
-                entity.Property(e => e.IsNonconcurrent)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .HasColumnName("IS_NONCONCURRENT");
+                entity.Property(e => e.IsNonconcurrent).HasColumnName("IS_NONCONCURRENT");
 
                 entity.Property(e => e.JobGroup)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("JOB_GROUP");
 
                 entity.Property(e => e.JobName)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("JOB_NAME");
 
                 entity.Property(e => e.Priority).HasColumnName("PRIORITY");
 
-                entity.Property(e => e.RequestsRecovery)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .HasColumnName("REQUESTS_RECOVERY");
+                entity.Property(e => e.RequestsRecovery).HasColumnName("REQUESTS_RECOVERY");
 
                 entity.Property(e => e.SchedTime).HasColumnName("SCHED_TIME");
 
                 entity.Property(e => e.State)
                     .HasMaxLength(16)
-                    .IsUnicode(false)
                     .HasColumnName("STATE");
 
                 entity.Property(e => e.TriggerGroup)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("TRIGGER_GROUP");
 
                 entity.Property(e => e.TriggerName)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("TRIGGER_NAME");
             });
 
@@ -291,50 +297,33 @@ namespace prn_job_manager.Models
 
                 entity.Property(e => e.SchedName)
                     .HasMaxLength(120)
-                    .IsUnicode(false)
                     .HasColumnName("SCHED_NAME");
 
                 entity.Property(e => e.JobName)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("JOB_NAME");
 
                 entity.Property(e => e.JobGroup)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("JOB_GROUP");
 
                 entity.Property(e => e.Description)
                     .HasMaxLength(250)
-                    .IsUnicode(false)
                     .HasColumnName("DESCRIPTION");
 
-                entity.Property(e => e.IsDurable)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .HasColumnName("IS_DURABLE");
+                entity.Property(e => e.IsDurable).HasColumnName("IS_DURABLE");
 
-                entity.Property(e => e.IsNonconcurrent)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .HasColumnName("IS_NONCONCURRENT");
+                entity.Property(e => e.IsNonconcurrent).HasColumnName("IS_NONCONCURRENT");
 
-                entity.Property(e => e.IsUpdateData)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .HasColumnName("IS_UPDATE_DATA");
+                entity.Property(e => e.IsUpdateData).HasColumnName("IS_UPDATE_DATA");
 
                 entity.Property(e => e.JobClassName)
                     .HasMaxLength(250)
-                    .IsUnicode(false)
                     .HasColumnName("JOB_CLASS_NAME");
 
                 entity.Property(e => e.JobData).HasColumnName("JOB_DATA");
 
-                entity.Property(e => e.RequestsRecovery)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .HasColumnName("REQUESTS_RECOVERY");
+                entity.Property(e => e.RequestsRecovery).HasColumnName("REQUESTS_RECOVERY");
             });
 
             modelBuilder.Entity<QrtzLock>(entity =>
@@ -345,12 +334,10 @@ namespace prn_job_manager.Models
 
                 entity.Property(e => e.SchedName)
                     .HasMaxLength(120)
-                    .IsUnicode(false)
                     .HasColumnName("SCHED_NAME");
 
                 entity.Property(e => e.LockName)
                     .HasMaxLength(40)
-                    .IsUnicode(false)
                     .HasColumnName("LOCK_NAME");
             });
 
@@ -362,12 +349,10 @@ namespace prn_job_manager.Models
 
                 entity.Property(e => e.SchedName)
                     .HasMaxLength(120)
-                    .IsUnicode(false)
                     .HasColumnName("SCHED_NAME");
 
                 entity.Property(e => e.TriggerGroup)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("TRIGGER_GROUP");
             });
 
@@ -379,12 +364,10 @@ namespace prn_job_manager.Models
 
                 entity.Property(e => e.SchedName)
                     .HasMaxLength(120)
-                    .IsUnicode(false)
                     .HasColumnName("SCHED_NAME");
 
                 entity.Property(e => e.InstanceName)
                     .HasMaxLength(200)
-                    .IsUnicode(false)
                     .HasColumnName("INSTANCE_NAME");
 
                 entity.Property(e => e.CheckinInterval).HasColumnName("CHECKIN_INTERVAL");
@@ -398,21 +381,16 @@ namespace prn_job_manager.Models
 
                 entity.ToTable("QRTZ_SIMPLE_TRIGGERS");
 
-                entity.HasIndex(e => new { e.SchedName, e.TriggerName, e.TriggerGroup }, "IX_QRTZ_SIMPLE_TRIGGERS_QRTZ_TRIGGERS");
-
                 entity.Property(e => e.SchedName)
                     .HasMaxLength(120)
-                    .IsUnicode(false)
                     .HasColumnName("SCHED_NAME");
 
                 entity.Property(e => e.TriggerName)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("TRIGGER_NAME");
 
                 entity.Property(e => e.TriggerGroup)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("TRIGGER_GROUP");
 
                 entity.Property(e => e.RepeatCount).HasColumnName("REPEAT_COUNT");
@@ -433,32 +411,21 @@ namespace prn_job_manager.Models
 
                 entity.ToTable("QRTZ_SIMPROP_TRIGGERS");
 
-                entity.HasIndex(e => new { e.SchedName, e.TriggerName, e.TriggerGroup }, "IX_QRTZ_SIMPROP_TRIGGERS_QRTZ_TRIGGERS");
-
                 entity.Property(e => e.SchedName)
                     .HasMaxLength(120)
-                    .IsUnicode(false)
                     .HasColumnName("SCHED_NAME");
 
                 entity.Property(e => e.TriggerName)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("TRIGGER_NAME");
 
                 entity.Property(e => e.TriggerGroup)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("TRIGGER_GROUP");
 
-                entity.Property(e => e.BoolProp1)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .HasColumnName("BOOL_PROP_1");
+                entity.Property(e => e.BoolProp1).HasColumnName("BOOL_PROP_1");
 
-                entity.Property(e => e.BoolProp2)
-                    .HasMaxLength(1)
-                    .IsUnicode(false)
-                    .HasColumnName("BOOL_PROP_2");
+                entity.Property(e => e.BoolProp2).HasColumnName("BOOL_PROP_2");
 
                 entity.Property(e => e.DecProp1)
                     .HasColumnType("numeric(13, 4)")
@@ -478,18 +445,19 @@ namespace prn_job_manager.Models
 
                 entity.Property(e => e.StrProp1)
                     .HasMaxLength(512)
-                    .IsUnicode(false)
                     .HasColumnName("STR_PROP_1");
 
                 entity.Property(e => e.StrProp2)
                     .HasMaxLength(512)
-                    .IsUnicode(false)
                     .HasColumnName("STR_PROP_2");
 
                 entity.Property(e => e.StrProp3)
                     .HasMaxLength(512)
-                    .IsUnicode(false)
                     .HasColumnName("STR_PROP_3");
+
+                entity.Property(e => e.TimeZoneId)
+                    .HasMaxLength(80)
+                    .HasColumnName("TIME_ZONE_ID");
 
                 entity.HasOne(d => d.QrtzTrigger)
                     .WithOne(p => p.QrtzSimpropTrigger)
@@ -503,31 +471,42 @@ namespace prn_job_manager.Models
 
                 entity.ToTable("QRTZ_TRIGGERS");
 
-                entity.HasIndex(e => new { e.SchedName, e.TriggerName, e.TriggerGroup }, "IX_QRTZ_TRIGGERS_QRTZ_JOB_DETAILS");
+                entity.HasIndex(e => new { e.SchedName, e.CalendarName }, "IDX_QRTZ_T_C");
+
+                entity.HasIndex(e => new { e.SchedName, e.JobGroup, e.JobName }, "IDX_QRTZ_T_G_J");
+
+                entity.HasIndex(e => new { e.SchedName, e.NextFireTime }, "IDX_QRTZ_T_NEXT_FIRE_TIME");
+
+                entity.HasIndex(e => new { e.SchedName, e.TriggerState, e.NextFireTime }, "IDX_QRTZ_T_NFT_ST");
+
+                entity.HasIndex(e => new { e.SchedName, e.MisfireInstr, e.NextFireTime, e.TriggerState }, "IDX_QRTZ_T_NFT_ST_MISFIRE");
+
+                entity.HasIndex(e => new { e.SchedName, e.MisfireInstr, e.NextFireTime, e.TriggerGroup, e.TriggerState }, "IDX_QRTZ_T_NFT_ST_MISFIRE_GRP");
+
+                entity.HasIndex(e => new { e.SchedName, e.TriggerGroup, e.TriggerState }, "IDX_QRTZ_T_N_G_STATE");
+
+                entity.HasIndex(e => new { e.SchedName, e.TriggerName, e.TriggerGroup, e.TriggerState }, "IDX_QRTZ_T_N_STATE");
+
+                entity.HasIndex(e => new { e.SchedName, e.TriggerState }, "IDX_QRTZ_T_STATE");
 
                 entity.Property(e => e.SchedName)
                     .HasMaxLength(120)
-                    .IsUnicode(false)
                     .HasColumnName("SCHED_NAME");
 
                 entity.Property(e => e.TriggerName)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("TRIGGER_NAME");
 
                 entity.Property(e => e.TriggerGroup)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("TRIGGER_GROUP");
 
                 entity.Property(e => e.CalendarName)
                     .HasMaxLength(200)
-                    .IsUnicode(false)
                     .HasColumnName("CALENDAR_NAME");
 
                 entity.Property(e => e.Description)
                     .HasMaxLength(250)
-                    .IsUnicode(false)
                     .HasColumnName("DESCRIPTION");
 
                 entity.Property(e => e.EndTime).HasColumnName("END_TIME");
@@ -535,13 +514,11 @@ namespace prn_job_manager.Models
                 entity.Property(e => e.JobData).HasColumnName("JOB_DATA");
 
                 entity.Property(e => e.JobGroup)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("JOB_GROUP");
 
                 entity.Property(e => e.JobName)
-                    .HasMaxLength(200)
-                    .IsUnicode(false)
+                    .HasMaxLength(150)
                     .HasColumnName("JOB_NAME");
 
                 entity.Property(e => e.MisfireInstr).HasColumnName("MISFIRE_INSTR");
@@ -556,12 +533,10 @@ namespace prn_job_manager.Models
 
                 entity.Property(e => e.TriggerState)
                     .HasMaxLength(16)
-                    .IsUnicode(false)
                     .HasColumnName("TRIGGER_STATE");
 
                 entity.Property(e => e.TriggerType)
                     .HasMaxLength(8)
-                    .IsUnicode(false)
                     .HasColumnName("TRIGGER_TYPE");
 
                 entity.HasOne(d => d.QrtzJobDetail)
