@@ -3,6 +3,18 @@
 @{
     Layout = "Shared/_MainLayout";
 }
+<style>
+    .action{
+        width: 0%;
+    }
+
+    .btn-action{
+        width: 100%;
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+
+</style>
 <main data-v-c0d0209c="" tabindex="0" class="flex-1 relative z-0 overflow-y-auto py-6 focus:outline-none">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
             <div>
@@ -50,12 +62,11 @@
                                             <th scope="col">Method</th>
                                             <th scope="col">Expression</th>
                                             <th scope="col">Status</th>
-                                            <th scope="col">Action</th>
+                                            <th scope="col" class="action">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    @foreach (var item in Model.List)
-                                        {
+                                    @foreach (var item in Model.List){
                                             <tr scope="row">
                                                 <td>@item.JobId</td>
                                                 <td>@item.Name</td>
@@ -68,9 +79,9 @@
                                                 <td>@item.Status</td>
                                                 
                                                 <td>
-                                                    <a asp-page="Edit" asp-route-id="@item.JobId" class="btn btn-success">Edit</a>
-                                                    <a asp-page-handler="delete" asp-route-id="@item.JobId" class="btn btn-danger">Delete</a>
-                                                    <a href="/Scheduler/@item.JobId" class="btn btn-warning">Logs</a>
+                                                    <a asp-page="Edit" asp-route-id="@item.JobId" class="btn btn-success btn-action">Edit</a>
+                                                    <a asp-page-handler="delete" asp-route-id="@item.JobId" class="btn btn-danger btn-action">Delete</a>
+                                                <a href="/Scheduler/@item.JobId" class="btn btn-warning btn-action">Logs</a>
                                                 </td>
                                             </tr>
                                         }
