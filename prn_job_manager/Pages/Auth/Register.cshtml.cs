@@ -2,13 +2,8 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using prn_job_manager.Models;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Principal;
-using System.Xml.Linq;
-using Microsoft.AspNetCore.Identity;
-using System;
 
-namespace prn_job_manager.Pages
+namespace prn_job_manager.Pages.Auth
 {
     public class RegisterModel : PageModel
     {
