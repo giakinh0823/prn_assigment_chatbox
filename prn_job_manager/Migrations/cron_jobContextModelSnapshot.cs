@@ -169,7 +169,7 @@ namespace prn_job_manager.Migrations
                         .HasColumnName("user_id");
 
                     b.HasKey("PaymentId")
-                        .HasName("PK__payment___ED1FC9EA73903F71");
+                        .HasName("PK__payment___ED1FC9EA7E971773");
 
                     b.ToTable("payment_info", (string)null);
                 });
@@ -696,6 +696,23 @@ namespace prn_job_manager.Migrations
                     b.ToTable("User", (string)null);
                 });
 
+            modelBuilder.Entity("prn_job_manager.Models.UserJob", b =>
+                {
+                    b.Property<int?>("JobId")
+                        .HasColumnType("int")
+                        .HasColumnName("job_id");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasIndex("JobId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("User_Job", (string)null);
+                });
+
             modelBuilder.Entity("prn_job_manager.Models.Log", b =>
                 {
                     b.HasOne("prn_job_manager.Models.Job", "Job")
@@ -758,6 +775,23 @@ namespace prn_job_manager.Migrations
                         .HasConstraintName("FK_QRTZ_TRIGGERS_QRTZ_JOB_DETAILS");
 
                     b.Navigation("QrtzJobDetail");
+                });
+
+            modelBuilder.Entity("prn_job_manager.Models.UserJob", b =>
+                {
+                    b.HasOne("prn_job_manager.Models.Job", "Job")
+                        .WithMany()
+                        .HasForeignKey("JobId")
+                        .HasConstraintName("FK__User_Job__job_id__286302EC");
+
+                    b.HasOne("prn_job_manager.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .HasConstraintName("FK__User_Job__user_i__276EDEB3");
+
+                    b.Navigation("Job");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("prn_job_manager.Models.Job", b =>

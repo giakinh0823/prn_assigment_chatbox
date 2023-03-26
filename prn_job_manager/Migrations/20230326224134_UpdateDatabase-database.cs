@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace prn_job_manager.Migrations
 {
-    public partial class UpdateDatabase : Migration
+    public partial class UpdateDatabasedatabase : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,6 +22,7 @@ namespace prn_job_manager.Migrations
                     header = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
                     method = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
                     expression = table.Column<string>(type: "varchar(max)", unicode: false, nullable: true),
+                    user_id = table.Column<int>(type: "int", nullable: true),
                     status = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: true),
                     created_at = table.Column<DateTime>(type: "datetime", nullable: true),
                     updated_at = table.Column<DateTime>(type: "datetime", nullable: true)
@@ -32,11 +33,43 @@ namespace prn_job_manager.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "payment_info",
+                columns: table => new
+                {
+                    payment_id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    user_id = table.Column<int>(type: "int", nullable: false),
+                    payment_date = table.Column<DateTime>(type: "date", nullable: false),
+                    payment_amount = table.Column<decimal>(type: "decimal(10,2)", nullable: false),
+                    start_date = table.Column<DateTime>(type: "date", nullable: false),
+                    end_date = table.Column<DateTime>(type: "date", nullable: false),
+                    status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__payment___ED1FC9EA7E971773", x => x.payment_id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QRTZ_BLOB_TRIGGERS",
+                columns: table => new
+                {
+                    SCHED_NAME = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    TRIGGER_NAME = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    TRIGGER_GROUP = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    BLOB_DATA = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QRTZ_BLOB_TRIGGERS", x => new { x.SCHED_NAME, x.TRIGGER_NAME, x.TRIGGER_GROUP });
+                });
+
+            migrationBuilder.CreateTable(
                 name: "QRTZ_CALENDARS",
                 columns: table => new
                 {
-                    SCHED_NAME = table.Column<string>(type: "varchar(120)", unicode: false, maxLength: 120, nullable: false),
-                    CALENDAR_NAME = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
+                    SCHED_NAME = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    CALENDAR_NAME = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     CALENDAR = table.Column<byte[]>(type: "varbinary(max)", nullable: false)
                 },
                 constraints: table =>
@@ -48,19 +81,19 @@ namespace prn_job_manager.Migrations
                 name: "QRTZ_FIRED_TRIGGERS",
                 columns: table => new
                 {
-                    SCHED_NAME = table.Column<string>(type: "varchar(120)", unicode: false, maxLength: 120, nullable: false),
-                    ENTRY_ID = table.Column<string>(type: "varchar(95)", unicode: false, maxLength: 95, nullable: false),
-                    TRIGGER_NAME = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    TRIGGER_GROUP = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    INSTANCE_NAME = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
+                    SCHED_NAME = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    ENTRY_ID = table.Column<string>(type: "nvarchar(140)", maxLength: 140, nullable: false),
+                    TRIGGER_NAME = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    TRIGGER_GROUP = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    INSTANCE_NAME = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     FIRED_TIME = table.Column<long>(type: "bigint", nullable: false),
                     SCHED_TIME = table.Column<long>(type: "bigint", nullable: false),
                     PRIORITY = table.Column<int>(type: "int", nullable: false),
-                    STATE = table.Column<string>(type: "varchar(16)", unicode: false, maxLength: 16, nullable: false),
-                    JOB_NAME = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
-                    JOB_GROUP = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
-                    IS_NONCONCURRENT = table.Column<string>(type: "varchar(1)", unicode: false, maxLength: 1, nullable: true),
-                    REQUESTS_RECOVERY = table.Column<string>(type: "varchar(1)", unicode: false, maxLength: 1, nullable: true)
+                    STATE = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
+                    JOB_NAME = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    JOB_GROUP = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: true),
+                    IS_NONCONCURRENT = table.Column<bool>(type: "bit", nullable: true),
+                    REQUESTS_RECOVERY = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -71,15 +104,15 @@ namespace prn_job_manager.Migrations
                 name: "QRTZ_JOB_DETAILS",
                 columns: table => new
                 {
-                    SCHED_NAME = table.Column<string>(type: "varchar(120)", unicode: false, maxLength: 120, nullable: false),
-                    JOB_NAME = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    JOB_GROUP = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    DESCRIPTION = table.Column<string>(type: "varchar(250)", unicode: false, maxLength: 250, nullable: true),
-                    JOB_CLASS_NAME = table.Column<string>(type: "varchar(250)", unicode: false, maxLength: 250, nullable: false),
-                    IS_DURABLE = table.Column<string>(type: "varchar(1)", unicode: false, maxLength: 1, nullable: false),
-                    IS_NONCONCURRENT = table.Column<string>(type: "varchar(1)", unicode: false, maxLength: 1, nullable: false),
-                    IS_UPDATE_DATA = table.Column<string>(type: "varchar(1)", unicode: false, maxLength: 1, nullable: false),
-                    REQUESTS_RECOVERY = table.Column<string>(type: "varchar(1)", unicode: false, maxLength: 1, nullable: false),
+                    SCHED_NAME = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    JOB_NAME = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    JOB_GROUP = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    DESCRIPTION = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
+                    JOB_CLASS_NAME = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    IS_DURABLE = table.Column<bool>(type: "bit", nullable: false),
+                    IS_NONCONCURRENT = table.Column<bool>(type: "bit", nullable: false),
+                    IS_UPDATE_DATA = table.Column<bool>(type: "bit", nullable: false),
+                    REQUESTS_RECOVERY = table.Column<bool>(type: "bit", nullable: false),
                     JOB_DATA = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
@@ -91,8 +124,8 @@ namespace prn_job_manager.Migrations
                 name: "QRTZ_LOCKS",
                 columns: table => new
                 {
-                    SCHED_NAME = table.Column<string>(type: "varchar(120)", unicode: false, maxLength: 120, nullable: false),
-                    LOCK_NAME = table.Column<string>(type: "varchar(40)", unicode: false, maxLength: 40, nullable: false)
+                    SCHED_NAME = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    LOCK_NAME = table.Column<string>(type: "nvarchar(40)", maxLength: 40, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -103,8 +136,8 @@ namespace prn_job_manager.Migrations
                 name: "QRTZ_PAUSED_TRIGGER_GRPS",
                 columns: table => new
                 {
-                    SCHED_NAME = table.Column<string>(type: "varchar(120)", unicode: false, maxLength: 120, nullable: false),
-                    TRIGGER_GROUP = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false)
+                    SCHED_NAME = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    TRIGGER_GROUP = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -115,8 +148,8 @@ namespace prn_job_manager.Migrations
                 name: "QRTZ_SCHEDULER_STATE",
                 columns: table => new
                 {
-                    SCHED_NAME = table.Column<string>(type: "varchar(120)", unicode: false, maxLength: 120, nullable: false),
-                    INSTANCE_NAME = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
+                    SCHED_NAME = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    INSTANCE_NAME = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
                     LAST_CHECKIN_TIME = table.Column<long>(type: "bigint", nullable: false),
                     CHECKIN_INTERVAL = table.Column<long>(type: "bigint", nullable: false)
                 },
@@ -146,21 +179,21 @@ namespace prn_job_manager.Migrations
                 name: "QRTZ_TRIGGERS",
                 columns: table => new
                 {
-                    SCHED_NAME = table.Column<string>(type: "varchar(120)", unicode: false, maxLength: 120, nullable: false),
-                    TRIGGER_NAME = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    TRIGGER_GROUP = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    JOB_NAME = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    JOB_GROUP = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    DESCRIPTION = table.Column<string>(type: "varchar(250)", unicode: false, maxLength: 250, nullable: true),
+                    SCHED_NAME = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    TRIGGER_NAME = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    TRIGGER_GROUP = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    JOB_NAME = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    JOB_GROUP = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    DESCRIPTION = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: true),
                     NEXT_FIRE_TIME = table.Column<long>(type: "bigint", nullable: true),
                     PREV_FIRE_TIME = table.Column<long>(type: "bigint", nullable: true),
                     PRIORITY = table.Column<int>(type: "int", nullable: true),
-                    TRIGGER_STATE = table.Column<string>(type: "varchar(16)", unicode: false, maxLength: 16, nullable: false),
-                    TRIGGER_TYPE = table.Column<string>(type: "varchar(8)", unicode: false, maxLength: 8, nullable: false),
+                    TRIGGER_STATE = table.Column<string>(type: "nvarchar(16)", maxLength: 16, nullable: false),
+                    TRIGGER_TYPE = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
                     START_TIME = table.Column<long>(type: "bigint", nullable: false),
                     END_TIME = table.Column<long>(type: "bigint", nullable: true),
-                    CALENDAR_NAME = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: true),
-                    MISFIRE_INSTR = table.Column<short>(type: "smallint", nullable: true),
+                    CALENDAR_NAME = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: true),
+                    MISFIRE_INSTR = table.Column<int>(type: "int", nullable: true),
                     JOB_DATA = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
                 },
                 constraints: table =>
@@ -223,33 +256,14 @@ namespace prn_job_manager.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "QRTZ_BLOB_TRIGGERS",
-                columns: table => new
-                {
-                    SCHED_NAME = table.Column<string>(type: "varchar(120)", unicode: false, maxLength: 120, nullable: false),
-                    TRIGGER_NAME = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    TRIGGER_GROUP = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    BLOB_DATA = table.Column<byte[]>(type: "varbinary(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.ForeignKey(
-                        name: "FK_QRTZ_BLOB_TRIGGERS_QRTZ_TRIGGERS",
-                        columns: x => new { x.SCHED_NAME, x.TRIGGER_NAME, x.TRIGGER_GROUP },
-                        principalTable: "QRTZ_TRIGGERS",
-                        principalColumns: new[] { "SCHED_NAME", "TRIGGER_NAME", "TRIGGER_GROUP" },
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "QRTZ_CRON_TRIGGERS",
                 columns: table => new
                 {
-                    SCHED_NAME = table.Column<string>(type: "varchar(120)", unicode: false, maxLength: 120, nullable: false),
-                    TRIGGER_NAME = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    TRIGGER_GROUP = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    CRON_EXPRESSION = table.Column<string>(type: "varchar(120)", unicode: false, maxLength: 120, nullable: false),
-                    TIME_ZONE_ID = table.Column<string>(type: "varchar(80)", unicode: false, maxLength: 80, nullable: true)
+                    SCHED_NAME = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    TRIGGER_NAME = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    TRIGGER_GROUP = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    CRON_EXPRESSION = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    TIME_ZONE_ID = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -266,12 +280,12 @@ namespace prn_job_manager.Migrations
                 name: "QRTZ_SIMPLE_TRIGGERS",
                 columns: table => new
                 {
-                    SCHED_NAME = table.Column<string>(type: "varchar(120)", unicode: false, maxLength: 120, nullable: false),
-                    TRIGGER_NAME = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    TRIGGER_GROUP = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    REPEAT_COUNT = table.Column<long>(type: "bigint", nullable: false),
+                    SCHED_NAME = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    TRIGGER_NAME = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    TRIGGER_GROUP = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    REPEAT_COUNT = table.Column<int>(type: "int", nullable: false),
                     REPEAT_INTERVAL = table.Column<long>(type: "bigint", nullable: false),
-                    TIMES_TRIGGERED = table.Column<long>(type: "bigint", nullable: false)
+                    TIMES_TRIGGERED = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -288,20 +302,21 @@ namespace prn_job_manager.Migrations
                 name: "QRTZ_SIMPROP_TRIGGERS",
                 columns: table => new
                 {
-                    SCHED_NAME = table.Column<string>(type: "varchar(120)", unicode: false, maxLength: 120, nullable: false),
-                    TRIGGER_NAME = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    TRIGGER_GROUP = table.Column<string>(type: "varchar(200)", unicode: false, maxLength: 200, nullable: false),
-                    STR_PROP_1 = table.Column<string>(type: "varchar(512)", unicode: false, maxLength: 512, nullable: true),
-                    STR_PROP_2 = table.Column<string>(type: "varchar(512)", unicode: false, maxLength: 512, nullable: true),
-                    STR_PROP_3 = table.Column<string>(type: "varchar(512)", unicode: false, maxLength: 512, nullable: true),
+                    SCHED_NAME = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
+                    TRIGGER_NAME = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    TRIGGER_GROUP = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    STR_PROP_1 = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
+                    STR_PROP_2 = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
+                    STR_PROP_3 = table.Column<string>(type: "nvarchar(512)", maxLength: 512, nullable: true),
                     INT_PROP_1 = table.Column<int>(type: "int", nullable: true),
                     INT_PROP_2 = table.Column<int>(type: "int", nullable: true),
                     LONG_PROP_1 = table.Column<long>(type: "bigint", nullable: true),
                     LONG_PROP_2 = table.Column<long>(type: "bigint", nullable: true),
                     DEC_PROP_1 = table.Column<decimal>(type: "numeric(13,4)", nullable: true),
                     DEC_PROP_2 = table.Column<decimal>(type: "numeric(13,4)", nullable: true),
-                    BOOL_PROP_1 = table.Column<string>(type: "varchar(1)", unicode: false, maxLength: 1, nullable: true),
-                    BOOL_PROP_2 = table.Column<string>(type: "varchar(1)", unicode: false, maxLength: 1, nullable: true)
+                    BOOL_PROP_1 = table.Column<bool>(type: "bit", nullable: true),
+                    BOOL_PROP_2 = table.Column<bool>(type: "bit", nullable: true),
+                    TIME_ZONE_ID = table.Column<string>(type: "nvarchar(80)", maxLength: 80, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -325,29 +340,64 @@ namespace prn_job_manager.Migrations
                 column: "user_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QRTZ_BLOB_TRIGGERS_SCHED_NAME_TRIGGER_NAME_TRIGGER_GROUP",
-                table: "QRTZ_BLOB_TRIGGERS",
-                columns: new[] { "SCHED_NAME", "TRIGGER_NAME", "TRIGGER_GROUP" });
+                name: "IDX_QRTZ_FT_G_J",
+                table: "QRTZ_FIRED_TRIGGERS",
+                columns: new[] { "SCHED_NAME", "JOB_GROUP", "JOB_NAME" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_QRTZ_CRON_TRIGGERS_QRTZ_TRIGGERS",
-                table: "QRTZ_CRON_TRIGGERS",
-                columns: new[] { "SCHED_NAME", "TRIGGER_NAME", "TRIGGER_GROUP" });
+                name: "IDX_QRTZ_FT_G_T",
+                table: "QRTZ_FIRED_TRIGGERS",
+                columns: new[] { "SCHED_NAME", "TRIGGER_GROUP", "TRIGGER_NAME" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_QRTZ_SIMPLE_TRIGGERS_QRTZ_TRIGGERS",
-                table: "QRTZ_SIMPLE_TRIGGERS",
-                columns: new[] { "SCHED_NAME", "TRIGGER_NAME", "TRIGGER_GROUP" });
+                name: "IDX_QRTZ_FT_INST_JOB_REQ_RCVRY",
+                table: "QRTZ_FIRED_TRIGGERS",
+                columns: new[] { "SCHED_NAME", "INSTANCE_NAME", "REQUESTS_RECOVERY" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_QRTZ_SIMPROP_TRIGGERS_QRTZ_TRIGGERS",
-                table: "QRTZ_SIMPROP_TRIGGERS",
-                columns: new[] { "SCHED_NAME", "TRIGGER_NAME", "TRIGGER_GROUP" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_QRTZ_TRIGGERS_QRTZ_JOB_DETAILS",
+                name: "IDX_QRTZ_T_C",
                 table: "QRTZ_TRIGGERS",
-                columns: new[] { "SCHED_NAME", "TRIGGER_NAME", "TRIGGER_GROUP" });
+                columns: new[] { "SCHED_NAME", "CALENDAR_NAME" });
+
+            migrationBuilder.CreateIndex(
+                name: "IDX_QRTZ_T_G_J",
+                table: "QRTZ_TRIGGERS",
+                columns: new[] { "SCHED_NAME", "JOB_GROUP", "JOB_NAME" });
+
+            migrationBuilder.CreateIndex(
+                name: "IDX_QRTZ_T_N_G_STATE",
+                table: "QRTZ_TRIGGERS",
+                columns: new[] { "SCHED_NAME", "TRIGGER_GROUP", "TRIGGER_STATE" });
+
+            migrationBuilder.CreateIndex(
+                name: "IDX_QRTZ_T_N_STATE",
+                table: "QRTZ_TRIGGERS",
+                columns: new[] { "SCHED_NAME", "TRIGGER_NAME", "TRIGGER_GROUP", "TRIGGER_STATE" });
+
+            migrationBuilder.CreateIndex(
+                name: "IDX_QRTZ_T_NEXT_FIRE_TIME",
+                table: "QRTZ_TRIGGERS",
+                columns: new[] { "SCHED_NAME", "NEXT_FIRE_TIME" });
+
+            migrationBuilder.CreateIndex(
+                name: "IDX_QRTZ_T_NFT_ST",
+                table: "QRTZ_TRIGGERS",
+                columns: new[] { "SCHED_NAME", "TRIGGER_STATE", "NEXT_FIRE_TIME" });
+
+            migrationBuilder.CreateIndex(
+                name: "IDX_QRTZ_T_NFT_ST_MISFIRE",
+                table: "QRTZ_TRIGGERS",
+                columns: new[] { "SCHED_NAME", "MISFIRE_INSTR", "NEXT_FIRE_TIME", "TRIGGER_STATE" });
+
+            migrationBuilder.CreateIndex(
+                name: "IDX_QRTZ_T_NFT_ST_MISFIRE_GRP",
+                table: "QRTZ_TRIGGERS",
+                columns: new[] { "SCHED_NAME", "MISFIRE_INSTR", "NEXT_FIRE_TIME", "TRIGGER_GROUP", "TRIGGER_STATE" });
+
+            migrationBuilder.CreateIndex(
+                name: "IDX_QRTZ_T_STATE",
+                table: "QRTZ_TRIGGERS",
+                columns: new[] { "SCHED_NAME", "TRIGGER_STATE" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_QRTZ_TRIGGERS_SCHED_NAME_JOB_NAME_JOB_GROUP",
@@ -369,6 +419,9 @@ namespace prn_job_manager.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Log");
+
+            migrationBuilder.DropTable(
+                name: "payment_info");
 
             migrationBuilder.DropTable(
                 name: "QRTZ_BLOB_TRIGGERS");

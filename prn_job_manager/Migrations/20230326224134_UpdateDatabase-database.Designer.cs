@@ -12,8 +12,8 @@ using prn_job_manager.Models;
 namespace prn_job_manager.Migrations
 {
     [DbContext(typeof(cron_jobContext))]
-    [Migration("20230326154850_UpdateDatabase-fix")]
-    partial class UpdateDatabasefix
+    [Migration("20230326224134_UpdateDatabase-database")]
+    partial class UpdateDatabasedatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -79,6 +79,10 @@ namespace prn_job_manager.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("updated_at");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
                     b.Property<string>("Webhook")
                         .IsUnicode(false)
                         .HasColumnType("varchar(max)")
@@ -133,34 +137,67 @@ namespace prn_job_manager.Migrations
                     b.ToTable("Log", (string)null);
                 });
 
+            modelBuilder.Entity("prn_job_manager.Models.PaymentInfo", b =>
+                {
+                    b.Property<int>("PaymentId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasColumnName("payment_id");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("PaymentId"), 1L, 1);
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("date")
+                        .HasColumnName("end_date");
+
+                    b.Property<decimal>("PaymentAmount")
+                        .HasColumnType("decimal(10,2)")
+                        .HasColumnName("payment_amount");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("date")
+                        .HasColumnName("payment_date");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("date")
+                        .HasColumnName("start_date");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int")
+                        .HasColumnName("status");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int")
+                        .HasColumnName("user_id");
+
+                    b.HasKey("PaymentId")
+                        .HasName("PK__payment___ED1FC9EA7E971773");
+
+                    b.ToTable("payment_info", (string)null);
+                });
+
             modelBuilder.Entity("prn_job_manager.Models.QrtzBlobTrigger", b =>
                 {
+                    b.Property<string>("SchedName")
+                        .HasMaxLength(120)
+                        .HasColumnType("nvarchar(120)")
+                        .HasColumnName("SCHED_NAME");
+
+                    b.Property<string>("TriggerName")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("TRIGGER_NAME");
+
+                    b.Property<string>("TriggerGroup")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
+                        .HasColumnName("TRIGGER_GROUP");
+
                     b.Property<byte[]>("BlobData")
                         .HasColumnType("varbinary(max)")
                         .HasColumnName("BLOB_DATA");
 
-                    b.Property<string>("SchedName")
-                        .IsRequired()
-                        .HasMaxLength(120)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(120)")
-                        .HasColumnName("SCHED_NAME");
-
-                    b.Property<string>("TriggerGroup")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("TRIGGER_GROUP");
-
-                    b.Property<string>("TriggerName")
-                        .IsRequired()
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
-                        .HasColumnName("TRIGGER_NAME");
-
-                    b.HasIndex("SchedName", "TriggerName", "TriggerGroup");
+                    b.HasKey("SchedName", "TriggerName", "TriggerGroup");
 
                     b.ToTable("QRTZ_BLOB_TRIGGERS", (string)null);
                 });
@@ -169,14 +206,12 @@ namespace prn_job_manager.Migrations
                 {
                     b.Property<string>("SchedName")
                         .HasMaxLength(120)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(120)")
+                        .HasColumnType("nvarchar(120)")
                         .HasColumnName("SCHED_NAME");
 
                     b.Property<string>("CalendarName")
                         .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("CALENDAR_NAME");
 
                     b.Property<byte[]>("Calendar")
@@ -193,38 +228,31 @@ namespace prn_job_manager.Migrations
                 {
                     b.Property<string>("SchedName")
                         .HasMaxLength(120)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(120)")
+                        .HasColumnType("nvarchar(120)")
                         .HasColumnName("SCHED_NAME");
 
                     b.Property<string>("TriggerName")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("TRIGGER_NAME");
 
                     b.Property<string>("TriggerGroup")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("TRIGGER_GROUP");
 
                     b.Property<string>("CronExpression")
                         .IsRequired()
                         .HasMaxLength(120)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(120)")
+                        .HasColumnType("nvarchar(120)")
                         .HasColumnName("CRON_EXPRESSION");
 
                     b.Property<string>("TimeZoneId")
                         .HasMaxLength(80)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(80)")
+                        .HasColumnType("nvarchar(80)")
                         .HasColumnName("TIME_ZONE_ID");
 
                     b.HasKey("SchedName", "TriggerName", "TriggerGroup");
-
-                    b.HasIndex(new[] { "SchedName", "TriggerName", "TriggerGroup" }, "IX_QRTZ_CRON_TRIGGERS_QRTZ_TRIGGERS");
 
                     b.ToTable("QRTZ_CRON_TRIGGERS", (string)null);
                 });
@@ -233,14 +261,12 @@ namespace prn_job_manager.Migrations
                 {
                     b.Property<string>("SchedName")
                         .HasMaxLength(120)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(120)")
+                        .HasColumnType("nvarchar(120)")
                         .HasColumnName("SCHED_NAME");
 
                     b.Property<string>("EntryId")
-                        .HasMaxLength(95)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(95)")
+                        .HasMaxLength(140)
+                        .HasColumnType("nvarchar(140)")
                         .HasColumnName("ENTRY_ID");
 
                     b.Property<long>("FiredTime")
@@ -250,36 +276,29 @@ namespace prn_job_manager.Migrations
                     b.Property<string>("InstanceName")
                         .IsRequired()
                         .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("INSTANCE_NAME");
 
-                    b.Property<string>("IsNonconcurrent")
-                        .HasMaxLength(1)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1)")
+                    b.Property<bool?>("IsNonconcurrent")
+                        .HasColumnType("bit")
                         .HasColumnName("IS_NONCONCURRENT");
 
                     b.Property<string>("JobGroup")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("JOB_GROUP");
 
                     b.Property<string>("JobName")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("JOB_NAME");
 
                     b.Property<int>("Priority")
                         .HasColumnType("int")
                         .HasColumnName("PRIORITY");
 
-                    b.Property<string>("RequestsRecovery")
-                        .HasMaxLength(1)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1)")
+                    b.Property<bool?>("RequestsRecovery")
+                        .HasColumnType("bit")
                         .HasColumnName("REQUESTS_RECOVERY");
 
                     b.Property<long>("SchedTime")
@@ -289,25 +308,28 @@ namespace prn_job_manager.Migrations
                     b.Property<string>("State")
                         .IsRequired()
                         .HasMaxLength(16)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(16)")
+                        .HasColumnType("nvarchar(16)")
                         .HasColumnName("STATE");
 
                     b.Property<string>("TriggerGroup")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("TRIGGER_GROUP");
 
                     b.Property<string>("TriggerName")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("TRIGGER_NAME");
 
                     b.HasKey("SchedName", "EntryId");
+
+                    b.HasIndex(new[] { "SchedName", "JobGroup", "JobName" }, "IDX_QRTZ_FT_G_J");
+
+                    b.HasIndex(new[] { "SchedName", "TriggerGroup", "TriggerName" }, "IDX_QRTZ_FT_G_T");
+
+                    b.HasIndex(new[] { "SchedName", "InstanceName", "RequestsRecovery" }, "IDX_QRTZ_FT_INST_JOB_REQ_RCVRY");
 
                     b.ToTable("QRTZ_FIRED_TRIGGERS", (string)null);
                 });
@@ -316,65 +338,48 @@ namespace prn_job_manager.Migrations
                 {
                     b.Property<string>("SchedName")
                         .HasMaxLength(120)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(120)")
+                        .HasColumnType("nvarchar(120)")
                         .HasColumnName("SCHED_NAME");
 
                     b.Property<string>("JobName")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("JOB_NAME");
 
                     b.Property<string>("JobGroup")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("JOB_GROUP");
 
                     b.Property<string>("Description")
                         .HasMaxLength(250)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("DESCRIPTION");
 
-                    b.Property<string>("IsDurable")
-                        .IsRequired()
-                        .HasMaxLength(1)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1)")
+                    b.Property<bool>("IsDurable")
+                        .HasColumnType("bit")
                         .HasColumnName("IS_DURABLE");
 
-                    b.Property<string>("IsNonconcurrent")
-                        .IsRequired()
-                        .HasMaxLength(1)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1)")
+                    b.Property<bool>("IsNonconcurrent")
+                        .HasColumnType("bit")
                         .HasColumnName("IS_NONCONCURRENT");
 
-                    b.Property<string>("IsUpdateData")
-                        .IsRequired()
-                        .HasMaxLength(1)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1)")
+                    b.Property<bool>("IsUpdateData")
+                        .HasColumnType("bit")
                         .HasColumnName("IS_UPDATE_DATA");
 
                     b.Property<string>("JobClassName")
                         .IsRequired()
                         .HasMaxLength(250)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("JOB_CLASS_NAME");
 
                     b.Property<byte[]>("JobData")
                         .HasColumnType("varbinary(max)")
                         .HasColumnName("JOB_DATA");
 
-                    b.Property<string>("RequestsRecovery")
-                        .IsRequired()
-                        .HasMaxLength(1)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1)")
+                    b.Property<bool>("RequestsRecovery")
+                        .HasColumnType("bit")
                         .HasColumnName("REQUESTS_RECOVERY");
 
                     b.HasKey("SchedName", "JobName", "JobGroup");
@@ -386,14 +391,12 @@ namespace prn_job_manager.Migrations
                 {
                     b.Property<string>("SchedName")
                         .HasMaxLength(120)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(120)")
+                        .HasColumnType("nvarchar(120)")
                         .HasColumnName("SCHED_NAME");
 
                     b.Property<string>("LockName")
                         .HasMaxLength(40)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(40)")
+                        .HasColumnType("nvarchar(40)")
                         .HasColumnName("LOCK_NAME");
 
                     b.HasKey("SchedName", "LockName");
@@ -405,14 +408,12 @@ namespace prn_job_manager.Migrations
                 {
                     b.Property<string>("SchedName")
                         .HasMaxLength(120)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(120)")
+                        .HasColumnType("nvarchar(120)")
                         .HasColumnName("SCHED_NAME");
 
                     b.Property<string>("TriggerGroup")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("TRIGGER_GROUP");
 
                     b.HasKey("SchedName", "TriggerGroup");
@@ -424,14 +425,12 @@ namespace prn_job_manager.Migrations
                 {
                     b.Property<string>("SchedName")
                         .HasMaxLength(120)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(120)")
+                        .HasColumnType("nvarchar(120)")
                         .HasColumnName("SCHED_NAME");
 
                     b.Property<string>("InstanceName")
                         .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("INSTANCE_NAME");
 
                     b.Property<long>("CheckinInterval")
@@ -451,37 +450,32 @@ namespace prn_job_manager.Migrations
                 {
                     b.Property<string>("SchedName")
                         .HasMaxLength(120)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(120)")
+                        .HasColumnType("nvarchar(120)")
                         .HasColumnName("SCHED_NAME");
 
                     b.Property<string>("TriggerName")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("TRIGGER_NAME");
 
                     b.Property<string>("TriggerGroup")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("TRIGGER_GROUP");
 
-                    b.Property<long>("RepeatCount")
-                        .HasColumnType("bigint")
+                    b.Property<int>("RepeatCount")
+                        .HasColumnType("int")
                         .HasColumnName("REPEAT_COUNT");
 
                     b.Property<long>("RepeatInterval")
                         .HasColumnType("bigint")
                         .HasColumnName("REPEAT_INTERVAL");
 
-                    b.Property<long>("TimesTriggered")
-                        .HasColumnType("bigint")
+                    b.Property<int>("TimesTriggered")
+                        .HasColumnType("int")
                         .HasColumnName("TIMES_TRIGGERED");
 
                     b.HasKey("SchedName", "TriggerName", "TriggerGroup");
-
-                    b.HasIndex(new[] { "SchedName", "TriggerName", "TriggerGroup" }, "IX_QRTZ_SIMPLE_TRIGGERS_QRTZ_TRIGGERS");
 
                     b.ToTable("QRTZ_SIMPLE_TRIGGERS", (string)null);
                 });
@@ -490,32 +484,25 @@ namespace prn_job_manager.Migrations
                 {
                     b.Property<string>("SchedName")
                         .HasMaxLength(120)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(120)")
+                        .HasColumnType("nvarchar(120)")
                         .HasColumnName("SCHED_NAME");
 
                     b.Property<string>("TriggerName")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("TRIGGER_NAME");
 
                     b.Property<string>("TriggerGroup")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("TRIGGER_GROUP");
 
-                    b.Property<string>("BoolProp1")
-                        .HasMaxLength(1)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1)")
+                    b.Property<bool?>("BoolProp1")
+                        .HasColumnType("bit")
                         .HasColumnName("BOOL_PROP_1");
 
-                    b.Property<string>("BoolProp2")
-                        .HasMaxLength(1)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(1)")
+                    b.Property<bool?>("BoolProp2")
+                        .HasColumnType("bit")
                         .HasColumnName("BOOL_PROP_2");
 
                     b.Property<decimal?>("DecProp1")
@@ -544,25 +531,25 @@ namespace prn_job_manager.Migrations
 
                     b.Property<string>("StrProp1")
                         .HasMaxLength(512)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(512)")
+                        .HasColumnType("nvarchar(512)")
                         .HasColumnName("STR_PROP_1");
 
                     b.Property<string>("StrProp2")
                         .HasMaxLength(512)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(512)")
+                        .HasColumnType("nvarchar(512)")
                         .HasColumnName("STR_PROP_2");
 
                     b.Property<string>("StrProp3")
                         .HasMaxLength(512)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(512)")
+                        .HasColumnType("nvarchar(512)")
                         .HasColumnName("STR_PROP_3");
 
-                    b.HasKey("SchedName", "TriggerName", "TriggerGroup");
+                    b.Property<string>("TimeZoneId")
+                        .HasMaxLength(80)
+                        .HasColumnType("nvarchar(80)")
+                        .HasColumnName("TIME_ZONE_ID");
 
-                    b.HasIndex(new[] { "SchedName", "TriggerName", "TriggerGroup" }, "IX_QRTZ_SIMPROP_TRIGGERS_QRTZ_TRIGGERS");
+                    b.HasKey("SchedName", "TriggerName", "TriggerGroup");
 
                     b.ToTable("QRTZ_SIMPROP_TRIGGERS", (string)null);
                 });
@@ -571,32 +558,27 @@ namespace prn_job_manager.Migrations
                 {
                     b.Property<string>("SchedName")
                         .HasMaxLength(120)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(120)")
+                        .HasColumnType("nvarchar(120)")
                         .HasColumnName("SCHED_NAME");
 
                     b.Property<string>("TriggerName")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("TRIGGER_NAME");
 
                     b.Property<string>("TriggerGroup")
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("TRIGGER_GROUP");
 
                     b.Property<string>("CalendarName")
                         .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasColumnType("nvarchar(200)")
                         .HasColumnName("CALENDAR_NAME");
 
                     b.Property<string>("Description")
                         .HasMaxLength(250)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(250)")
+                        .HasColumnType("nvarchar(250)")
                         .HasColumnName("DESCRIPTION");
 
                     b.Property<long?>("EndTime")
@@ -609,20 +591,18 @@ namespace prn_job_manager.Migrations
 
                     b.Property<string>("JobGroup")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("JOB_GROUP");
 
                     b.Property<string>("JobName")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(200)")
+                        .HasMaxLength(150)
+                        .HasColumnType("nvarchar(150)")
                         .HasColumnName("JOB_NAME");
 
-                    b.Property<short?>("MisfireInstr")
-                        .HasColumnType("smallint")
+                    b.Property<int?>("MisfireInstr")
+                        .HasColumnType("int")
                         .HasColumnName("MISFIRE_INSTR");
 
                     b.Property<long?>("NextFireTime")
@@ -644,22 +624,36 @@ namespace prn_job_manager.Migrations
                     b.Property<string>("TriggerState")
                         .IsRequired()
                         .HasMaxLength(16)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(16)")
+                        .HasColumnType("nvarchar(16)")
                         .HasColumnName("TRIGGER_STATE");
 
                     b.Property<string>("TriggerType")
                         .IsRequired()
                         .HasMaxLength(8)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(8)")
+                        .HasColumnType("nvarchar(8)")
                         .HasColumnName("TRIGGER_TYPE");
 
                     b.HasKey("SchedName", "TriggerName", "TriggerGroup");
 
                     b.HasIndex("SchedName", "JobName", "JobGroup");
 
-                    b.HasIndex(new[] { "SchedName", "TriggerName", "TriggerGroup" }, "IX_QRTZ_TRIGGERS_QRTZ_JOB_DETAILS");
+                    b.HasIndex(new[] { "SchedName", "CalendarName" }, "IDX_QRTZ_T_C");
+
+                    b.HasIndex(new[] { "SchedName", "JobGroup", "JobName" }, "IDX_QRTZ_T_G_J");
+
+                    b.HasIndex(new[] { "SchedName", "NextFireTime" }, "IDX_QRTZ_T_NEXT_FIRE_TIME");
+
+                    b.HasIndex(new[] { "SchedName", "TriggerState", "NextFireTime" }, "IDX_QRTZ_T_NFT_ST");
+
+                    b.HasIndex(new[] { "SchedName", "MisfireInstr", "NextFireTime", "TriggerState" }, "IDX_QRTZ_T_NFT_ST_MISFIRE");
+
+                    b.HasIndex(new[] { "SchedName", "MisfireInstr", "NextFireTime", "TriggerGroup", "TriggerState" }, "IDX_QRTZ_T_NFT_ST_MISFIRE_GRP");
+
+                    b.HasIndex(new[] { "SchedName", "TriggerGroup", "TriggerState" }, "IDX_QRTZ_T_N_G_STATE");
+
+                    b.HasIndex(new[] { "SchedName", "TriggerName", "TriggerGroup", "TriggerState" }, "IDX_QRTZ_T_N_STATE");
+
+                    b.HasIndex(new[] { "SchedName", "TriggerState" }, "IDX_QRTZ_T_STATE");
 
                     b.ToTable("QRTZ_TRIGGERS", (string)null);
                 });
@@ -736,18 +730,6 @@ namespace prn_job_manager.Migrations
                     b.Navigation("Job");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("prn_job_manager.Models.QrtzBlobTrigger", b =>
-                {
-                    b.HasOne("prn_job_manager.Models.QrtzTrigger", "QrtzTrigger")
-                        .WithMany()
-                        .HasForeignKey("SchedName", "TriggerName", "TriggerGroup")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("FK_QRTZ_BLOB_TRIGGERS_QRTZ_TRIGGERS");
-
-                    b.Navigation("QrtzTrigger");
                 });
 
             modelBuilder.Entity("prn_job_manager.Models.QrtzCronTrigger", b =>
