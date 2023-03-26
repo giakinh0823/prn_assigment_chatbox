@@ -136,13 +136,11 @@ namespace prn_job_manager.Models
             modelBuilder.Entity<PaymentInfo>(entity =>
             {
                 entity.HasKey(e => e.PaymentId)
-                    .HasName("PK__payment___ED1FC9EA953B9D88");
+                    .HasName("PK__payment___ED1FC9EA73903F71");
 
                 entity.ToTable("payment_info");
 
-                entity.Property(e => e.PaymentId)
-                    .ValueGeneratedNever()
-                    .HasColumnName("payment_id");
+                entity.Property(e => e.PaymentId).HasColumnName("payment_id");
 
                 entity.Property(e => e.EndDate)
                     .HasColumnType("date")
