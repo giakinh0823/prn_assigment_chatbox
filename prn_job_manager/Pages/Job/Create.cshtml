@@ -1,0 +1,68 @@
+﻿@page
+@model prn_job_manager.Pages.Job.CreateModel
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create Job</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label  class="control-label">Job Name</label>
+                <input asp-for="Job.Name" class="form-control" />
+                <span asp-validation-for="Job.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group mt-2">
+                <label class="control-label">Job Description</label>
+                <input asp-for="Job.Description" class="form-control"/>
+            </div>
+            <div class="form-group  mt-2">
+                <label class="control-label">Webhook</label>
+                <input asp-for="Job.Webhook" class="form-control"/>
+            </div>
+            <div class="form-group  mt-2">
+                <label class="control-label">Payload</label>
+                <input asp-for="Job.Payload" class="form-control" />
+               
+            </div>
+            <div class="form-group  mt-2">
+                <label class="control-label">Header</label>
+                <input asp-for="Job.Header" class="form-control" />
+               
+            </div>
+            <div class="form-group  mt-2">
+                <label class="control-label">Method</label>
+                <input asp-for="Job.Method" class="form-control" />
+      
+            </div>
+            <div class="form-group mt-2">
+                <label class="control-label">Expression</label>
+                <input asp-for="Job.Expression" class="form-control" />
+
+            </div>
+            <div class="form-group mt-2">
+                <label class="control-label">Status</label>
+                <input asp-for="Job.Status" class="form-control" />
+
+            </div>
+            <div class="form-group mt-2">
+                <input type="submit" value="Create" class="btn btn-success" />
+                <a asp-page="List" class="btn btn-danger">List</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
