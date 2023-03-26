@@ -51,7 +51,7 @@ namespace prn_job_manager.Pages.Auth
                     }
                     HttpContext.Session.SetString("name", p.Name!);
                     HttpContext.Session.SetString("email", p.Email!);
-                    return RedirectToPage("../Index");
+                    return RedirectToPage("/Job/List");
 
                 }
                 else

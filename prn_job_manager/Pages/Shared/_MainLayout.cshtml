@@ -6,14 +6,15 @@
     <title>@ViewData["Title"] - prn_job_manager</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link href="./css/Home.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/Home.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/Image" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link href="./Image" rel="stylesheet" />
     <link rel="stylesheet" href="~/prn_job_manager.styles.css" asp-append-version="true" />
 </head>
 <body>
-    
-
-    <main role="main" class="pb-3">
+<main role="main" class="pb-3">
         <div data-v-c0d0209c="" class="h-screen flex overflow-hidden bg-white">
             <!---->
             <div data-v-9589e138="" data-v-c0d0209c="" class="hidden md:flex md:flex-shrink-0">
@@ -24,7 +25,7 @@
                                 <img data-v-9589e138="" src="/img/cronhub-white-logo2.png" alt="Cronhub logo"
                                      class="hidden lg:block h-4 w-auto" />
                             </a>
-                            <a data-v-9589e138="" href="SchedulersSeatrch"
+                            <a data-v-9589e138="" href="/job/list"
                                class="mt-1 group flex items-center px-2 py-2 hover:bg-gray-700 text-md leading-5 font-medium hover:text-gray-100 text-gray-100 rounded-md focus:outline-none transition ease-in-out duration-150 router-link-exact-active router-link-active"
                                aria-current="page">
                                 <svg data-v-9589e138="" fill="none" stroke-linecap="round"
@@ -34,35 +35,9 @@
                                 </svg>
                                 Schedulers
                             </a>
-                            <a data-v-9589e138="" href="MonitorsSearch"
-                               class="mt-1 group hover:bg-gray-700 flex items-center px-2 py-2 text-md leading-5 font-medium hover:text-gray-100 text-gray-100 rounded-md focus:outline-none transition ease-in-out duration-150">
-                                <svg data-v-9589e138="" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                     stroke="currentColor" class="mr-3 h-6 w-6">
-                                    <path data-v-9589e138="" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4">
-                                    </path>
-                                </svg>
-                                Monitors
-                            </a>
                         </nav>
                     </div>
                     <nav data-v-9589e138="" class="flex-initial px-2 py-8 border-gray-200 border-r border-gray-300">
-                        <!---->
-                        <a data-v-9589e138="" href="#"
-                           class="changelog changloglink hover:text-gray-300 text-gray-400 ml-2 mt-1 group flex items-center px-2 py-2 text-md leading-5 font-medium rounded-md focus:outline-none transition ease-in-out duration-150">
-                            <svg data-v-9589e138="" fill="none" stroke-linecap="round" stroke-linejoin="round"
-                                 stroke-width="2" stroke="currentColor" viewBox="0 0 24 24"
-                                 class="mr-3 h-5 w-5 text-gray-400 hover:text-gray-300 transition ease-in-out duration-150">
-                                <path data-v-9589e138=""
-                                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9">
-                                </path>
-                            </svg>
-                            What's New
-                            <span id="HW_badge_cont" class="HW_badge_cont HW_visible" style="">
-                                <span id="HW_badge"
-                                      class="HW_badge HW_softHidden" data-count-unseen="" style=""></span>
-                            </span>
-                        </a>
                         <a data-v-9589e138="" href="/settings"
                            class="text-gray-400 hover:bg-gray-700 hover:text-gray-300 ml-2 mt-1 group flex items-center px-2 py-2 text-md leading-5 font-medium rounded-md focus:outline-none transition ease-in-out duration-150">
                             <svg data-v-9589e138="" fill="currentColor" viewBox="0 0 20 20"
@@ -83,16 +58,6 @@
                                       clip-rule="evenodd" fill-rule="evenodd"></path>
                             </svg>
                             Billing
-                        </a>
-                        <a data-v-9589e138="" href="https://docs.cronhub.io"
-                           class="text-gray-400 hover:text-gray-300 ml-2 mt-1 group flex items-center px-2 py-2 text-md leading-5 font-medium rounded-md focus:outline-none transition ease-in-out duration-150">
-                            <svg data-v-9589e138="" fill="currentColor" viewBox="0 0 20 20"
-                                 class="mr-3 h-5 w-5 text-gray-400 hover:text-gray-300 transition ease-in-out duration-150">
-                                <path data-v-9589e138=""
-                                      d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z"
-                                      clip-rule="evenodd" fill-rule="evenodd"></path>
-                            </svg>
-                            Docs
                         </a>
                         <a data-v-9589e138="" href="/logout"
                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
@@ -121,7 +86,6 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

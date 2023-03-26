@@ -30,4 +30,10 @@
     <Folder Include="Migrations" />
   </ItemGroup>
 
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Pages\UserPage\MonitorsSearch.cshtml" />
+    <_ContentIncludedByDefault Remove="Pages\UserPage\SchedulersDetail.cshtml" />
+    <_ContentIncludedByDefault Remove="Pages\UserPage\SchedulersSeatrch.cshtml" />
+  </ItemGroup>
+
 </Project>
