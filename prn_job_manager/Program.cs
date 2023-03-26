@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using prn_job_manager.Hubs;
 using prn_job_manager.Models;
 using Quartz;
 
@@ -75,9 +76,12 @@ app.UseRouting();
 
 app.UseAuthentication();
 app.UseSession();
+
+app.MapHub<NotifyHub>("/notify");
+
+
 app.MapRazorPages();
 app.MapControllers();
-
 app.UseRouting();
 app.UseEndpoints(endpoints =>
 {
