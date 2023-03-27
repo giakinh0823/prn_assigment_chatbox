@@ -66,6 +66,12 @@ namespace prn_job_manager.Pages.Scheduler
             {
                 IScheduler scheduler = await _schedulerFactory.GetScheduler();
                 await scheduler.DeleteJob(new JobKey(job.JobId.ToString(), user.UserId.ToString()));
+                List<Log> logs = _context.Logs.Where(l => l.JobId == job.JobId).ToList();
+                foreach (Log log in logs)
+                {
+                    _context.Logs.Remove(log);
+                }
+                await _context.SaveChangesAsync();
                 _context.Jobs.Remove(job);
                 await _context.SaveChangesAsync();
             }
