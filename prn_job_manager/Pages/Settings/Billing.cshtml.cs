@@ -27,12 +27,14 @@ public class BillingModel : PageModel
         User? user = _context.Users.FirstOrDefault(x => x.Email == email);
         
         ViewData["paymentInfo"] = "You're on Free Plan";
+        ViewData["numberOfSchedulers"] = "1 Scheduler";
 
         PaymentInfo? paymentInfo = _context.PaymentInfos.FirstOrDefault(x => x.UserId == user.UserId);
         if (paymentInfo != null && PaymentStatusConstant.ACTIVE.Equals(paymentInfo?.Status)
             && paymentInfo.EndDate > DateTime.Now)
         {
             ViewData["paymentInfo"] = "Expire time " + paymentInfo?.EndDate.ToString("dd/MM/yyyy");
+            ViewData["numberOfSchedulers"] = "Unlimited Schedulers";
         }
     }
     
