@@ -73,15 +73,19 @@
                                                     <div class="mt-2 text-md font-semibold text-gray-700"><span></span></div> <div class="mt-3 space-y-2">
                                                         <div class="flex items-center">
                                                             <svg viewBox="0 0 20 20" fill="currentColor" class="text-green-400 opacity-75 w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> <div class="ml-2 text-sm text-gray-600">
-                                                                1 Schedulers
+                                                                @if (ViewData["paymentInfo"] == null)
+                                                        {
+                                                            <div>1 Schedulers</div>
+                                                        } else
+                                                        {
+                                                            <span class="text-sm font-normal text-gray-500">
+                                                                No Limit
+                                                            </span>
+                                                        }
                                                             </div>
                                                         </div> <div class="flex items-center">
                                                             <svg viewBox="0 0 20 20" fill="currentColor" class="text-green-400 opacity-75 w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> <div class="ml-2 text-sm text-gray-600">
-                                                                1 Monitors
-                                                            </div>
-                                                        </div> <div class="flex items-center">
-                                                            <svg viewBox="0 0 20 20" fill="currentColor" class="text-green-400 opacity-75 w-5 h-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg> <div class="ml-2 text-sm text-gray-600">
-                                                                0 Team Members
+                                                                1 Team Members
                                                             </div>
                                                         </div>
                                                     </div>
